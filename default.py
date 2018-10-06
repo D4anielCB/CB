@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.10.02"
+Versao = "18.10.06"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -410,10 +410,13 @@ def PlayMRC(): #95 Play filmes
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".{1,8}src=\"([^\"]+)\"').findall(link)
 		if player:
-			player[0] = url2 = re.sub('.php', "player.php", player[0])
-			mp4 = common.OpenURL(player[0])
-			mmp4 = re.compile('http.{5,95}\.mp4').findall(mp4)
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , mmp4[0] + "?play|Referer="+player[0], 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
+			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
+			reg = "(.+)\\$rc"+mp4[0][0]
+			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			m = re.compile(reg, re.IGNORECASE).findall(link2)
+			url2 = m[0]
+			file = mp4[0][1]+".mp4"
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play|Referer=https://redecanais.link/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -429,6 +432,7 @@ def PlaySRC(): #133 Play series
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		if player:
+			#ST(player)
 			player[0] = url2 = re.sub('.php', "player.php", player[0])
 			mp4 = common.OpenURL(player[0])
 			mmp4 = re.compile('http.{5,95}\.mp4').findall(mp4)
