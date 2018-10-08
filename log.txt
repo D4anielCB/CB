@@ -57,4 +57,5 @@
 18.09.13 - Minor Fix Netcine
 18.09.28 - Fix Redecanais
 18.10.02 - fix netcine filmes
-18.10.06 - fix recanais filmes lista esterna
+18.10.06 - fix recanais filmes lista externa
+18.10.06 - fix recanais series lista externa
