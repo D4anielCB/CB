@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.10.08"
+Versao = "18.10.15"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -412,8 +412,11 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
-			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			m = re.compile(reg, re.IGNORECASE).findall(link2)
+			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
+			pb = re.sub('\$s1\/', ss[0], pb )
+			pb = re.sub('\$s2\/', ss[1], pb )
+			m = re.compile(reg, re.IGNORECASE).findall(pb)
 			url2 = m[0]
 			file = mp4[0][1]+".mp4"
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play|Referer=https://redecanais.link/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
@@ -432,10 +435,13 @@ def PlaySRC(): #133 Play series
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
 		if player:
-			mp4 = re.compile('server(\d*).+vid\=(\w+)').findall(player[0])
+			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
-			link2 = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			m = re.compile(reg, re.IGNORECASE).findall(link2)
+			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
+			pb = re.sub('\$s1\/', ss[0], pb )
+			pb = re.sub('\$s2\/', ss[1], pb )
+			m = re.compile(reg, re.IGNORECASE).findall(pb)
 			url2 = m[0]
 			file = mp4[0][1]+".mp4"
 			PlayUrl(name, url2 + file + "?play|Referer=https://redecanais.link/", iconimage, name)
