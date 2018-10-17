@@ -60,3 +60,4 @@
 18.10.06 - fix recanais filmes lista externa
 18.10.08 - fix recanais series lista externa
 18.10.15 - alteracao forma lista pastebin server RC
+18.10.17 - minor fix RC list, forma lista
