@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.10.15"
+Versao = "18.10.17"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -438,9 +438,15 @@ def PlaySRC(): #133 Play series
 			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
 			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
-			pb = re.sub('\$s1\/', ss[0], pb )
-			pb = re.sub('\$s2\/', ss[1], pb )
+			ss = re.compile('(.{1,65})RCF?Server.{1,35}\.mp4').findall(pb)
+			try:
+				pb = re.sub('\$s1\/', ss[2], pb )
+			except:
+				pb = re.sub('\$s1\/', ss[0], pb )
+			try:
+				pb = re.sub('\$s2\/', ss[3], pb )
+			except:
+				pb = re.sub('\$s2\/', ss[1], pb )
 			m = re.compile(reg, re.IGNORECASE).findall(pb)
 			url2 = m[0]
 			file = mp4[0][1]+".mp4"
