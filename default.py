@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.10.17"
+Versao = "18.10.20"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -208,6 +208,8 @@ def PlayS(): #62
 						cp = "desktop20"
 					elif url3[0] == "campanha29":
 						cp = "desktop29"
+					elif url3[0] == "campanha26":
+						cp = "desktop26"
 					else:
 						cp = "desktopnovo"
 					link4 = common.OpenURL("http://p.netcine.us/players/"+cp+".php"+url3[1])
@@ -280,6 +282,8 @@ def PlayMNC(): #79
 			cp = "desktop20"
 		elif m[0][0] == "campanha29":
 			cp = "desktop29"
+		elif m[0][0] == "campanha26":
+			cp = "desktop26"
 		else:
 			cp = "desktopnovo"
 		link1 = common.OpenURL("http://p.netcine.us/players/"+cp+".php"+m[0][1])
