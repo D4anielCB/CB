@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.10.25"
+Versao = "18.10.31"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -286,7 +286,7 @@ def PlayMNC(): #79
 			cp = "desktop29"
 		elif m[0][0] == "campanha26":
 			cp = "desktop26"
-		elif url3[0] == "campanha27":
+		elif m[0][0] == "campanha27":
 			cp = "desktop27"
 		else:
 			cp = "desktopnovo"
