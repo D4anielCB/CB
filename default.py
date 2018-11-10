@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.10.31"
+Versao = "18.11.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -199,22 +199,12 @@ def PlayS(): #62
 		listal=[]
 		for url2 in m:
 			link3 = common.OpenURL(url2)
-			m3 = re.compile("(campanha.{0,2}).php(\?[^\"]+)").findall(link3)
+			m3 = re.compile("src\=\"(.+campanha[^\"]+)").findall(link3)
 			if m3:
-				for url3 in m3:
-					if url3[0] == "campanha":
-						cp = "desktop22"
-					elif url3[0] == "campanha2":
-						cp = "desktop20"
-					elif url3[0] == "campanha29":
-						cp = "desktop29"
-					elif url3[0] == "campanha26":
-						cp = "desktop26"
-					elif url3[0] == "campanha27":
-						cp = "desktop27"
-					else:
-						cp = "desktopnovo"
-					link4 = common.OpenURL("http://p.netcine.us/players/"+cp+".php"+url3[1])
+				#for url3 in m3:
+					red = common.OpenURL(m3[0])
+					red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red)
+					link4 = common.OpenURL(red2[0])
 					link4 = re.sub('window.location.+', '', link4)
 					m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 					m4 = list(reversed(m4))
@@ -223,7 +213,10 @@ def PlayS(): #62
 						dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
 						listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
 			else:
-					m4= re.compile("http\:\/\/.+[ALTO|BAIXO].mp4[^\"]+").findall(link3)
+					red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(link3)
+					link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
+					link4 = re.sub('window.location.+', '', link4)
+					m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 					m4 = list(reversed(m4))
 					for url4 in m4:
 						listal.append(url4)
