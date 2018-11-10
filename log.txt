@@ -64,3 +64,4 @@
 18.10.20 - Minor fix NC
 18.10.25 - Minor fix NC
 18.10.31 - Minor fix NC
+18.11.10 - Major change NC
