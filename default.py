@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.10"
+Versao = "18.11.12"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -269,33 +269,28 @@ def ListMoviesNC(): #78
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, isFolder=False)
 def PlayMNC(): #79
 	try:
+		i=0
+		listaf=[]
+		listal=[]
 		link = common.OpenURL(url)
-		m = re.compile("(campanha.{0,2}).php(\?[^\"]+)").findall(link)
-		if m[0][0] == "campanha":
-			cp = "desktop22"
-		elif m[0][0] == "campanha2":
-			cp = "desktop20"
-		elif m[0][0] == "campanha29":
-			cp = "desktop29"
-		elif m[0][0] == "campanha26":
-			cp = "desktop26"
-		elif m[0][0] == "campanha27":
-			cp = "desktop27"
-		else:
-			cp = "desktopnovo"
-		link1 = common.OpenURL("http://p.netcine.us/players/"+cp+".php"+m[0][1])
-		link1 = re.sub('window.location.+', '', link1)
-		m2 = re.compile("http.+?mp4[^\"]+").findall(link1)
-		if m2:
-			m2 = list(reversed(m2))
-			lista =[]
-			for url2 in m2:
-				lista.append( "[B][COLOR green]HD[/COLOR][/B]" if "ALTO" in url2 else "[B][COLOR red]SD[/COLOR][/B]")
-			d = xbmcgui.Dialog().select("Escolha a resolução:", lista)
-			if d!= -1:
-				global background
-				background=background+";;;"+name+";;;NC"
-				PlayUrl(name, m2[d], iconimage, info)
+		red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link)
+		if not red:
+			red2 = re.compile('http[^"]+').findall(link)
+			link2 = common.OpenURL(red2[0])
+			red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link2)
+		link3 = common.OpenURL(red[0],headers={'Cookie': "autorizado=teste; "})
+		link3 = re.sub('window.location.+', '', link3)
+		m4= re.compile("http.+?mp4[^\"]+").findall(link3) 
+		m4 = list(reversed(m4))
+		for url4 in m4:
+			listal.append(url4)
+			dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
+			listaf.append("[B]"+dubleg)
+		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
+		if d!= -1:
+			global background
+			background=background+";;;"+name+";;;NC"
+			PlayUrl(name, listal[d], iconimage, info)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def Generos(): #80
