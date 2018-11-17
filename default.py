@@ -209,7 +209,7 @@ def PlayS(): #62
 					m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 					m4 = list(reversed(m4))
 					for url4 in m4:
-						listal.append(url4)
+						listal.append(url4.replace("';",""))
 						dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
 						listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
 			else:
