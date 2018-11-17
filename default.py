@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.12"
+Versao = "18.11.17"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -216,10 +216,10 @@ def PlayS(): #62
 					red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(link3)
 					link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
 					link4 = re.sub('window.location.+', '', link4)
-					m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
+					m4= re.compile("http.+?mp4[^\"]+").findall(link4)
 					m4 = list(reversed(m4))
 					for url4 in m4:
-						listal.append(url4)
+						listal.append(url4.replace("';",""))
 						dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
 						listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
 			i+=1
@@ -283,7 +283,7 @@ def PlayMNC(): #79
 		m4= re.compile("http.+?mp4[^\"]+").findall(link3) 
 		m4 = list(reversed(m4))
 		for url4 in m4:
-			listal.append(url4)
+			listal.append(url4.replace("';",""))
 			dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
 			listaf.append("[B]"+dubleg)
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
