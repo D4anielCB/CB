@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.17"
+Versao = "18.11.19"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -201,27 +201,30 @@ def PlayS(): #62
 			link3 = common.OpenURL(url2)
 			m3 = re.compile("src\=\"(.+campanha[^\"]+)").findall(link3)
 			if m3:
-				#for url3 in m3:
-					red = common.OpenURL(m3[0])
-					red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red)
-					link4 = common.OpenURL(red2[0])
-					link4 = re.sub('window.location.+', '', link4)
-					m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
-					m4 = list(reversed(m4))
-					for url4 in m4:
-						listal.append(url4.replace("';",""))
-						dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
-						listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
+				red = common.OpenURL(m3[0])
+				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red)
+				link4 = common.OpenURL(red2[0])
+				link4 = re.sub('www.micetop.us.+', '', link4)
+				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
+				m4 = list(reversed(m4))
+				for url4 in m4:
+					listal.append(url4.replace("';",""))
+					dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
+					listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
 			else:
-					red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(link3)
-					link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
-					link4 = re.sub('window.location.+', '', link4)
-					m4= re.compile("http.+?mp4[^\"]+").findall(link4)
-					m4 = list(reversed(m4))
-					for url4 in m4:
-						listal.append(url4.replace("';",""))
-						dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
-						listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
+				red = common.OpenURL(url2)
+				m3 = re.compile("src\=\"([^\"]+)").findall(red)
+				red1 = common.OpenURL(m3[0])				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red1)
+				link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
+				m5 = re.compile("location.href=\'([^\']+)").findall(link4)
+				link5 = common.OpenURL(m5[0])
+				link5 = re.sub('www.micetop.us.+', '', link5)
+				m4= re.compile("http.+?mp4[^\"]+").findall(link5)
+				m4 = list(reversed(m4))
+				for url4 in m4:
+					listal.append(url4.replace("';",""))
+					dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
+					listaf.append("[B][COLOR blue]"+listan[i] +"[/COLOR] "+dubleg)
 			i+=1
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
@@ -273,11 +276,15 @@ def PlayMNC(): #79
 		listaf=[]
 		listal=[]
 		link = common.OpenURL(url)
-		red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link)
-		if not red:
-			red2 = re.compile('http[^"]+').findall(link)
-			link2 = common.OpenURL(red2[0])
-			red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link2)
+		#red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link)
+		#ST(red)
+		#if not red:
+		red2 = re.compile('http[^"]+').findall(link)
+		link2 = common.OpenURL(red2[0])
+		red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link2)
+		if not "desktop" in red[0]:
+			link2 = common.OpenURL(red[0])
+			red = re.compile('location.href=\'([^\']+)').findall(link2)
 		link3 = common.OpenURL(red[0],headers={'Cookie': "autorizado=teste; "})
 		link3 = re.sub('window.location.+', '', link3)
 		m4= re.compile("http.+?mp4[^\"]+").findall(link3) 
