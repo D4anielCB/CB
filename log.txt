@@ -67,3 +67,4 @@
 18.11.10 - Major change NC Series
 18.11.12 - Major change NC Filmes
 18.11.17 - Minor change NC
+18.11.19 - Fix NC
