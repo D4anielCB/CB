@@ -68,3 +68,4 @@
 18.11.12 - Major change NC Filmes
 18.11.17 - Minor change NC
 18.11.19 - Fix NC
+18.11.23 - Fix qtde series/filmes RC
