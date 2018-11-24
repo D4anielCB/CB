@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.19"
+Versao = "18.11.23"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -214,7 +214,8 @@ def PlayS(): #62
 			else:
 				red = common.OpenURL(url2)
 				m3 = re.compile("src\=\"([^\"]+)").findall(red)
-				red1 = common.OpenURL(m3[0])				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red1)
+				red1 = common.OpenURL(m3[0])
+				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red1)
 				link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
 				m5 = re.compile("location.href=\'([^\']+)").findall(link4)
 				link5 = common.OpenURL(m5[0])
@@ -332,7 +333,7 @@ def MoviesRCD(): #90 Filme dublado
 					p += 1
 			else:
 				break
-		if p >= 60:
+		if p >= 40:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
@@ -357,7 +358,7 @@ def MoviesRCL(): #91 Filme Legendado
 					p += 1
 			else:
 				break
-		if p >= 60:
+		if p >= 40:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPageleg) + 2) +"[/B]][/COLOR]", cPageleg , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPageleg")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
@@ -379,7 +380,7 @@ def MoviesRCN(): #92 Filmes Nacional
 					p += 1
 			else:
 				break
-		if p >= 60:
+		if p >= 40:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPagenac) + 2) +"[/B]][/COLOR]", cPagenac , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPagenac")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0)
@@ -401,7 +402,7 @@ def MoviesRCR(): # Lancamentos
 					p += 1
 			else:
 				break
-		if p >= 60:
+		if p >= 40:
 			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPagelan) + 2) +"[/B]][/COLOR]", cPagelan , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPagelan")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0)
