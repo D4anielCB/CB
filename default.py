@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.23"
+Versao = "18.11.26"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -204,7 +204,7 @@ def PlayS(): #62
 				red = common.OpenURL(m3[0])
 				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red)
 				link4 = common.OpenURL(red2[0])
-				link4 = re.sub('www.micetop.us.+', '', link4)
+				link4 = re.sub('window.location.href.+', '', link4)
 				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 				m4 = list(reversed(m4))
 				for url4 in m4:
@@ -219,7 +219,8 @@ def PlayS(): #62
 				link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
 				m5 = re.compile("location.href=\'([^\']+)").findall(link4)
 				link5 = common.OpenURL(m5[0])
-				link5 = re.sub('www.micetop.us.+', '', link5)
+				link5 = re.sub('window.location.href.+', '', link5)
+				ST(link5)
 				m4= re.compile("http.+?mp4[^\"]+").findall(link5)
 				m4 = list(reversed(m4))
 				for url4 in m4:
@@ -871,7 +872,7 @@ def PlayLinkMM(): #182
 	m = re.compile('addiframe\(\'([^\']+)').findall(link)
 	if m:
 		m[0] = "http://player.mmfilmes.tv" + m[0] if not "http" in m[0] else m[0]
-		link2 = common.OpenURL(m[0],headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
+		link2 = common.OpenURL(m[0].replace('e.php?data=/',""),headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
 		m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
 		legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
 		listar=[]
@@ -960,7 +961,7 @@ def PlaySMM(): #194
 	if "drive.google" in url:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
 		sys.exit()
-	link2 = common.OpenURL(url,headers={'referer': "http://player.mmfilmes.tv"}).replace('"',"'")
+	link2 = common.OpenURL(url.replace('e.php?data=/',""),headers={'referer': "http://player.mmfilmes.tv"}).replace('"',"'")
 	m2 = re.compile('(h[^\']+).+?label...(\w+)').findall(link2)
 	legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
 	listar=[]
