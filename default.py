@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.26"
+Versao = "18.11.28"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -685,13 +685,10 @@ def EPG():
 		return ""
 		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
 def TVRC(): #100
-	link = urllib2.urlopen("https://pastebin.com/raw/QaYHY3Nf").read().replace('\n','').replace('\r','')
-	match = re.compile('url="(.+?)".+?mg="(.+?)".+?ame="(.+?)"').findall(link)
-	for url2,img2,name2 in match:
-		if cadulto=="8080":
-			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = "")
-		elif not "dulto" in name2:
-			AddDir(name2, url2, 101, img2, img2, isFolder=False, IsPlayable=True, info = "")
+	link = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_rc.php")
+	match = re.compile('(.+)\s(.+)').findall(link)
+	for name2,url2 in match:
+		AddDir(name2, url2, 3, "", "", isFolder=False, IsPlayable=True, info = "")
 def PlayTVRC(): # 101
 	#url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
 	try:
@@ -872,7 +869,7 @@ def PlayLinkMM(): #182
 	m = re.compile('addiframe\(\'([^\']+)').findall(link)
 	if m:
 		m[0] = "http://player.mmfilmes.tv" + m[0] if not "http" in m[0] else m[0]
-		link2 = common.OpenURL(m[0].replace('e.php?data=/',""),headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
+		link2 = common.OpenURL(re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', m[0]),headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
 		m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
 		legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
 		listar=[]
@@ -961,7 +958,7 @@ def PlaySMM(): #194
 	if "drive.google" in url:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
 		sys.exit()
-	link2 = common.OpenURL(url.replace('e.php?data=/',""),headers={'referer': "http://player.mmfilmes.tv"}).replace('"',"'")
+	link2 = common.OpenURL( re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', url) ,headers={'referer': "http://player.mmfilmes.tv"}).replace('"',"'")
 	m2 = re.compile('(h[^\']+).+?label...(\w+)').findall(link2)
 	legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
 	listar=[]
