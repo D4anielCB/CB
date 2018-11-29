@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.28"
+Versao = "18.11.29"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -688,7 +688,8 @@ def TVRC(): #100
 	link = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_rc.php")
 	match = re.compile('(.+)\s(.+)').findall(link)
 	for name2,url2 in match:
-		AddDir(name2, url2, 3, "", "", isFolder=False, IsPlayable=True, info = "")
+		#AddDir("name2", "url2", 3, "", "", isFolder=False, IsPlayable=True)
+		AddDir(name2, url2, 3, " ", " ", isFolder=False, IsPlayable=True, info="")
 def PlayTVRC(): # 101
 	#url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
 	try:
@@ -956,29 +957,50 @@ def ListEpiMM(x): #192
 		AddDir("Episódio "+ e + " [COLOR blue]" + name2 ,url2, 194, iconimage, iconimage, isFolder=False, IsPlayable=True, info=info)
 def PlaySMM(): #194
 	if "drive.google" in url:
-		xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
+		#xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado, drive')
+		PlayUrl(name, "plugin://plugin.video.gdrive?mode=streamURL&url="+url.encode('utf-8'), iconimage, info)
 		sys.exit()
-	link2 = common.OpenURL( re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', url) ,headers={'referer': "http://player.mmfilmes.tv"}).replace('"',"'")
-	m2 = re.compile('(h[^\']+).+?label...(\w+)').findall(link2)
-	legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
-	listar=[]
-	listal=[]
-	for link,res in m2:
-		listal.append(link)
-		listar.append(res)
-	if len(listal) < 1:
-		xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
-		sys.exit(int(sys.argv[1]))
-	d = xbmcgui.Dialog().select("Selecione a resolução", listar)
-	if d!= -1:
-		url2 = re.sub(' ', '%20', listal[d] )
-		if legenda:
-			legenda = re.sub(' ', '%20', legenda[0][0] )
-			if not "http" in legenda:
-				legenda = "http://player.mmfilmes.tv/" + legenda
+	cdn = re.compile('(\d+)\=(.+?.mp4)|\&l\=(.+)').findall(url)
+	if cdn:
+		cdn = list(reversed(cdn))
+		listar=[]
+		listal=[]
+		legenda=""
+		for res,link,leg in cdn:
+			if link <> "":
+				listal.append(link)
+				listar.append(res)
+			if leg:
+				legenda = leg
+				if not "http" in legenda:
+					legenda = "http://player.mmfilmes.tv/" + legenda
+				legenda = re.sub(' ', '%20', legenda )
+		d = xbmcgui.Dialog().select("Selecione a resolução, cdn", listar)
+		if d!= -1:
+			url2 = re.sub(' ', '%20', listal[d] )
 			PlayUrl(name, url2, iconimage, info, sub=legenda)
-		else:
-			PlayUrl(name, url2, iconimage, info)
+	else:
+		link2 = common.OpenURL( re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', url) ,headers={'referer': "http://player.mmfilmes.tv"}).replace('"',"'")
+		m2 = re.compile('(h[^\']+).+?label...(\w+)').findall(link2)
+		legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
+		listar=[]
+		listal=[]
+		for link,res in m2:
+			listal.append(link)
+			listar.append(res)
+		if len(listal) < 1:
+			xbmcgui.Dialog().ok('Cube Play', 'Erro!')
+			sys.exit(int(sys.argv[1]))
+		d = xbmcgui.Dialog().select("Selecione a resolução", listar)
+		if d!= -1:
+			url2 = re.sub(' ', '%20', listal[d] )
+			if legenda:
+				legenda = re.sub(' ', '%20', legenda[0][0] )
+				if not "http" in legenda:
+					legenda = "http://player.mmfilmes.tv/" + legenda
+				PlayUrl(name, url2, iconimage, info, sub=legenda)
+			else:
+				PlayUrl(name, url2, iconimage, info)
 # ----------------- Fim MM filmes
 # ----------------- Inicio Go Filmes
 def GenerosGO(): #219
