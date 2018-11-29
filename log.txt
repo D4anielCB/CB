@@ -71,3 +71,4 @@
 18.11.23 - Fix qtde series/filmes RC
 18.11.26 - Fix MMfilmes
 18.11.28 - Minor Fix MMfilmes e Canais TV
+18.11.29 - Fix mmfilmes outras fontes
