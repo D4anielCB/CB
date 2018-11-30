@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.11.29"
+Versao = "18.11.30"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -686,10 +686,10 @@ def EPG():
 		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
 def TVRC(): #100
 	link = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_rc.php")
-	match = re.compile('(.+)\s(.+)').findall(link)
-	for name2,url2 in match:
+	match = re.compile('(.{1,30});(.{1,100});(.{1,100})').findall(link)
+	for name2,img2,url2 in match:
 		#AddDir("name2", "url2", 3, "", "", isFolder=False, IsPlayable=True)
-		AddDir(name2, url2, 3, " ", " ", isFolder=False, IsPlayable=True, info="")
+		AddDir(name2, url2, 3, img2, img2, isFolder=False, IsPlayable=True, info="")
 def PlayTVRC(): # 101
 	#url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
 	try:
