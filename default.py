@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.12.03"
+Versao = "18.12.06"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -43,6 +43,8 @@ Cat = Addon.getSetting("Cat")
 Catfo = Addon.getSetting("Catfo")
 CatMM = Addon.getSetting("CatMM")
 CatGO = Addon.getSetting("CatGO")
+
+cSIPTV = Addon.getSetting("cSIPTV")
 
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
 Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
@@ -1095,6 +1097,8 @@ def PlayUrl(name, url, iconimage=None, info='', sub='', metah=''):
 	url = common.getFinalUrl(url)
 	#xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
 	listitem = xbmcgui.ListItem(path=url)
+	if cSIPTV:
+		urllib2.urlopen( "http://cubeplay.000webhostapp.com/siptv/index.php?u="+cSIPTV+"&"+url ).read()
 	if metah:
 		listitem.setInfo(type="Video", infoLabels=metah)
 	else:
