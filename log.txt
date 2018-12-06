@@ -74,3 +74,4 @@
 18.11.29 - Fix mmfilmes outras fontes
 18.11.30 - Fix Canais (img)
 18.12.03 - Added categorias aos canais
+18.12.06 - Smart IPTV
