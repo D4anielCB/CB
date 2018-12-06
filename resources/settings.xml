@@ -43,6 +43,11 @@
 	<setting id="cOrdFO" type="enum" label="Ordem dos filmes" lvalues="Data|Título" default="1" />
 </category>
 
+<category label="Smart Iptv">
+	<setting label="[B][COLOR white]Acesse: http://cubeplay.000webhostapp.com/siptv/list.php[/COLOR][/B]" type="text" />
+	<setting id="cSIPTV" label="Usuário:" option="text" type="text" default="" />
+</category>
+
 <category label="Canais de TV">
 	<setting label="[B][COLOR white]Coloque a senha para liberar conteúdo adulto dos canais de TV[/COLOR][/B]" type="text" />
 	<setting id="cadulto" label="Senha:" option="hidden" type="text" default="" />
