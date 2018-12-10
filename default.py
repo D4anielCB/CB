@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.12.06"
+Versao = "18.12.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -691,8 +691,8 @@ def TVRC(): #100
 	d = xbmcgui.Dialog().select("Qual a ordem dos canais?", c)
 	link = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_rc.php?c="+str(d))
 	#link = common.OpenURL("http://localhost:8080/epg/_rc.php?c="+str(d))
-	match = re.compile('(.{1,70});(.{1,100});(.{1,100})').findall(link)
-	for name2,img2,url2 in match:
+	match = re.compile('tvg\-logo\=\"([^\"]+).+,(.+)\s(.+)|,(.+)\s(.+)').findall(link)
+	for img2,name2,url2,a,c in match:
 		AddDir(name2, url2, 3, img2, img2, isFolder=False, IsPlayable=True, info="")
 def PlayTVRC(): # 101
 	#url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
@@ -748,7 +748,7 @@ def MoviesFO(urlfo,pagina2): #170
 			if m:
 				#xbmcgui.Dialog().ok('Cube Play', str(m))
 				for img2,name2,url2 in m:
-					AddDir(name2 + " ("+m2[i][0]+") - " + m2[i][1], url2, 171, "https://filmesonline.online/"+img2, "https://filmesonline.online/"+img2, info="", background=url)
+					AddDir(name2 + " ("+m2[i][0]+") - " + m2[i][1], url2, 171, "https://filmesonline.zone/"+img2, "https://filmesonline.zone/"+img2, info="", background=url)
 					p+=1
 					i+=1
 		if p >= 80:
