@@ -75,3 +75,4 @@
 18.11.30 - Fix Canais (img)
 18.12.03 - Added categorias aos canais
 18.12.06 - Smart IPTV
+18.12.10 - TV e filmes.online imagens
