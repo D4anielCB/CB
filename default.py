@@ -575,7 +575,7 @@ def Busca(): # 160
 		l= 0
 		for x in range(0, 6):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.cz/search.php?keywords="+d+"&page="+str(l))
+			link = common.OpenURL(proxy+"http://www.redecanais.cz/search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
