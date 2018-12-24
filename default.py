@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.12.10"
+Versao = "18.12.24"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -71,6 +71,8 @@ URLP="http://cubeplay.000webhostapp.com/"
 #URLP="http://localhost:8080/"
 URLNC=URLP+"cloud/v2/nc/"
 URLFO=URLP+"fo/"
+
+proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -325,9 +327,9 @@ def MoviesRCD(): #90 Filme dublado
 		l= int(cPage)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.cz/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
+			link = common.OpenURL(proxy+"http://www.redecanais.cz/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.cz/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
+				link = common.OpenURL(proxy+"http://www.redecanais.cz/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -350,9 +352,9 @@ def MoviesRCL(): #91 Filme Legendado
 		l= int(cPageleg)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.cz/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
+			link = common.OpenURL(proxy+"http://www.redecanais.cz/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL("http://www.redecanais.cz/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
+				link = common.OpenURL(proxy+"http://www.redecanais.cz/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -374,7 +376,7 @@ def MoviesRCN(): #92 Filmes Nacional
 		l= int(cPagenac)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.cz/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
+			link = common.OpenURL(proxy+"http://www.redecanais.cz/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -396,7 +398,7 @@ def MoviesRCR(): # Lancamentos
 		l= int(cPagelan)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("https://www.redecanais.cz/browse-filmes-lancamentos-videos-"+str(l)+"-date.html")
+			link = common.OpenURL(proxy+"https://www.redecanais.cz/browse-filmes-lancamentos-videos-"+str(l)+"-date.html")
 			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
@@ -411,7 +413,7 @@ def MoviesRCR(): # Lancamentos
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayMRC(): #95 Play filmes
 	try:
-		link = common.OpenURL(url.replace("https","http"))
+		link = common.OpenURL(proxy+url.replace("https","http"))
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
@@ -436,7 +438,7 @@ def PlayMRC(): #95 Play filmes
 def PlaySRC(): #133 Play series
 	try:
 		url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
-		link = common.OpenURL(url2)
+		link = common.OpenURL(proxy+url2)
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
@@ -464,7 +466,7 @@ def PlaySRC(): #133 Play series
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('redecanais\.[^\/]+', "redecanais.cz", url.replace("https","http") )
-	link = common.OpenURL(url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
+	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("https","http")
 	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
 	i= 0
 	if background=="None":
@@ -514,7 +516,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		l= int(pagina)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL("http://www.redecanais.cz/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
+			link = common.OpenURL(proxy+"http://www.redecanais.cz/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
 			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
 			if match:
 				for url2,img2,name2 in match:
