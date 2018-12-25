@@ -77,3 +77,4 @@
 18.12.06 - Smart IPTV
 18.12.10 - TV e filmes.online imagens
 18.12.24 - "proxy" Redecanais
+18.12.25 - redecanais.site
