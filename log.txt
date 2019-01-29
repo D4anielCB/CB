@@ -84,3 +84,4 @@
 19.01.19 - redecanais.eu + proxy
 19.01.20 - redecanais.in
 19.01.23 - minor fix RC
+19.01.29 - redecanais.nz
