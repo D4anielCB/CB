@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.02.08"
+Versao = "19.03.02"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -210,6 +210,7 @@ def PlayS(): #62
 				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red)
 				link4 = common.OpenURL(red2[0])
 				link4 = re.sub('window.location.href.+', '', link4)
+				link4 = link4.replace("'",'"')
 				m4= re.compile("http.+?mp4[^\"]+").findall(link4) 
 				m4 = list(reversed(m4))
 				for url4 in m4:
@@ -225,7 +226,7 @@ def PlayS(): #62
 				m5 = re.compile("location.href=\'([^\']+)").findall(link4)
 				link5 = common.OpenURL(m5[0])
 				link5 = re.sub('window.location.href.+', '', link5)
-				ST(link5)
+				link5 = link5.replace("'",'"')
 				m4= re.compile("http.+?mp4[^\"]+").findall(link5)
 				m4 = list(reversed(m4))
 				for url4 in m4:
@@ -1109,7 +1110,8 @@ def PlayUrl(name, url, iconimage=None, info='', sub='', metah=''):
 			AddFavorites(b[0], iconimage, b[1], "181", "historic.txt")
 	url = re.sub('\.mp4$', '.mp4?play', url)
 	url = common.getFinalUrl(url)
-	#xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
+	xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
+	#ST(url)
 	listitem = xbmcgui.ListItem(path=url)
 	if cSIPTV:
 		urllib2.urlopen( "http://cubeplay.000webhostapp.com/siptv/index.php?u="+cSIPTV+"&"+url ).read()
