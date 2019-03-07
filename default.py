@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.03.02"
+Versao = "19.03.07"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -332,9 +332,9 @@ def MoviesRCD(): #90 Filme dublado
 			link = common.OpenURL(proxy+"http://www.redecanais.club/browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL(proxy+"http://www.redecanais.club/browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
-				for url2,img2,name2 in match:
+				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
@@ -357,9 +357,9 @@ def MoviesRCL(): #91 Filme Legendado
 			link = common.OpenURL(proxy+"http://www.redecanais.club/browse-filmes-legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL(proxy+"http://www.redecanais.club/browse-"+Clista2[int(Cat)]+"-Filmes-Legendado-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
-				for url2,img2,name2 in match:
+				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
@@ -378,11 +378,11 @@ def MoviesRCN(): #92 Filmes Nacional
 		l= int(cPagenac)*5
 		for x in range(0, 5):
 			l +=1
-			link = common.OpenURL(proxy+"http://www.redecanais.club/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			link = common.OpenURL(proxy+"http://www.redecanais.one/browse-filmes-nacional-videos-"+str(l)+"-"+cOrdRCF+".html")
+			match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
-				for url2,img2,name2 in match:
-					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
+				for url2,name2,img2 in match:
+					url2 = re.sub('^\.', "http://www.redecanais.one/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
@@ -401,9 +401,9 @@ def MoviesRCR(): # Lancamentos
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL(proxy+"https://www.redecanais.club/browse-filmes-lancamentos-videos-"+str(l)+"-date.html")
-			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
-				for url2,img2,name2 in match:
+				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
 					AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
@@ -520,9 +520,9 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL(proxy+"http://www.redecanais.club/browse-"+urlrc+"-videos-"+str(l)+"-"+cOrdRCS+".html")
-			match = re.compile('href=\"([^\"]+).{70,90}src=\"([^\"]+)\".alt=\"([^\"]+)').findall(link)
+			match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
-				for url2,img2,name2 in match:
+				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
 					if not "index.html" in url2:
 						AddDir(name2 ,url2, 135, img2, img2, info="")
