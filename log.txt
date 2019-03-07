@@ -88,3 +88,4 @@
 19.02.01 - redecanais.nl
 19.02.08 - redecanais.club
 19.03.02 - Fix netcine
+19.03.07 - Fix RC new layout
