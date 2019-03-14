@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.03.07"
+Versao = "19.03.14"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -223,7 +223,7 @@ def PlayS(): #62
 				red1 = common.OpenURL(m3[0])
 				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red1)
 				link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
-				m5 = re.compile("location.href=\'([^\']+)").findall(link4)
+				m5 = re.compile("location.href=\'([^\']+p\=[^\']+)").findall(link4)
 				link5 = common.OpenURL(m5[0])
 				link5 = re.sub('window.location.href.+', '', link5)
 				link5 = link5.replace("'",'"')
@@ -251,7 +251,11 @@ def MoviesNC(): #71
 			l2 = re.compile("box_movies(.+)").findall(link)
 			link = common.OpenURL("http://netcine.us/page/3/?mt").replace('\n','').replace('\r','')
 			l3 = re.compile("box_movies(.+)").findall(link)
-			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0])
+			link = common.OpenURL("http://netcine.us/page/4/?mt").replace('\n','').replace('\r','')
+			l4 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.us/page/5/?mt").replace('\n','').replace('\r','')
+			l5 = re.compile("box_movies(.+)").findall(link)
+			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0]+l5[0])
 		else:
 			link = common.OpenURL("http://netcine.us/category/"+Clista[int(Cat)]).replace('\n','').replace('\r','')
 			l2 = re.compile("box_movies(.+)").findall(link)
@@ -292,9 +296,10 @@ def PlayMNC(): #79
 		red = re.compile('redirecionar\.php\?data=([^"]+)').findall(link2)
 		if not "desktop" in red[0]:
 			link2 = common.OpenURL(red[0])
-			red = re.compile('location.href=\'([^\']+)').findall(link2)
+			red = re.compile('location.href=\'([^\']+p\=[^\']+)').findall(link2)
 		link3 = common.OpenURL(red[0],headers={'Cookie': "autorizado=teste; "})
 		link3 = re.sub('window.location.+', '', link3)
+		link3 = link3.replace("'",'"')
 		m4= re.compile("http.+?mp4[^\"]+").findall(link3) 
 		m4 = list(reversed(m4))
 		for url4 in m4:
