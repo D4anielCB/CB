@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.03.14"
+Versao = "19.04.06"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -58,8 +58,10 @@ ClistaGO1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação","Animação","Av
 
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
+	xbmc.executebuiltin("Container.SetViewMode(50)")
 def setViewM():
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
+	xbmc.executebuiltin("Container.SetViewMode(50)")
 	
 favfilmesFile = os.path.join(addon_data_dir, 'favoritesf.txt')
 favseriesFile = os.path.join(addon_data_dir, 'favoritess.txt')
@@ -425,7 +427,7 @@ def PlayMRC(): #95 Play filmes
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
-		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
+		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
 			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
@@ -450,7 +452,7 @@ def PlaySRC(): #133 Play series
 		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
-		player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
+		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
 			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
