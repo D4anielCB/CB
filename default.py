@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.04.06"
+Versao = "19.04.17"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -38,6 +38,8 @@ cOrdRCF = "date" if Addon.getSetting("cOrdRCF")=="0" else "title"
 cOrdRCS = "date" if Addon.getSetting("cOrdRCS")=="0" else "title"
 cOrdNCF = Addon.getSetting("cOrdNCF")
 cOrdNCS = Addon.getSetting("cOrdNCS")
+
+cPlayD = Addon.getSetting("cPlayD") #play
 
 Cat = Addon.getSetting("Cat")
 Catfo = Addon.getSetting("Catfo")
@@ -343,7 +345,10 @@ def MoviesRCD(): #90 Filme dublado
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
-					AddDir(name2 ,url2, 95, img2, img2, info="")
+					if cPlayD == "true":
+						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
+					else:
+						AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
 				break
@@ -368,7 +373,10 @@ def MoviesRCL(): #91 Filme Legendado
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
-					AddDir(name2 ,url2, 95, img2, img2, info="")
+					if cPlayD == "true":
+						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
+					else:
+						AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
 				break
@@ -390,7 +398,10 @@ def MoviesRCN(): #92 Filmes Nacional
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.one/", url2 )
-					AddDir(name2 ,url2, 95, img2, img2, info="")
+					if cPlayD == "true":
+						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
+					else:
+						AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
 				break
@@ -412,7 +423,10 @@ def MoviesRCR(): # Lancamentos
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "http://www.redecanais.club/", url2 )
-					AddDir(name2 ,url2, 95, img2, img2, info="")
+					if cPlayD == "true":
+						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True) 
+					else:
+						AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
 				break
@@ -439,6 +453,32 @@ def PlayMRC(): #95 Play filmes
 			url2 = m[0]
 			file = mp4[0][1]+".mp4"
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
+		else:
+			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
+	except:
+		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
+def PlayMRC2(): #96 Play filmes
+	url2 = re.sub('redecanais\.[^\/]+', "redecanais.club", url.replace("https","http") )
+	try:
+		link = common.OpenURL(proxy+url2.replace("https","http"))
+		desc = re.compile('itemprop=\"?description\"?>\s<p>(.+)<\/p>').findall(link)
+		if desc:
+			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
+		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
+		if player:
+			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
+			reg = "(.+)\\$rc"+mp4[0][0]
+			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
+			pb = re.sub('\$s1\/', ss[0], pb )
+			pb = re.sub('\$s2\/', ss[1], pb )
+			m = re.compile(reg, re.IGNORECASE).findall(pb)
+			url2 = m[0]
+			file = mp4[0][1]+".mp4"
+			global background
+			background=url+";;;"+name+";;;RC"
+			PlayUrl("[B][COLOR yellow]"+ name +" [/COLOR][/B]", url2 + file + "?play", iconimage, desc) #aqui
+			#AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -1458,6 +1498,8 @@ elif mode == 92:
 elif mode == 95:
 	PlayMRC()
 	setViewM()
+elif mode == 96:
+	PlayMRC2()
 elif mode == 100:
 	TVRC()
 	setViewM()
