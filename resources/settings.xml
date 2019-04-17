@@ -34,6 +34,9 @@
 	<setting label="[B][COLOR blue]RedeCanais.com:[/COLOR][/B]" type="text" />
 	<setting id="cOrdRCF" type="enum" label="Ordem dos filmes" lvalues="Data|Título" default="0" />
 	<setting id="cOrdRCS" type="enum" label="Ordem dos séries/anime/desenhos" lvalues="Data|Título" default="1" />
+	
+	<setting id="cPlayD" type="bool" label="Play Rápido" default="true" />
+	
 	<setting label="" type="sep" />
 	<setting label="[B][COLOR yellow]NetCine.us:[/COLOR][/B]" type="text" />
 	<setting id="cOrdNCF" type="enum" label="Ordem dos filmes" lvalues="Data|Título" default="0" />
