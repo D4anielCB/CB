@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.04.22"
+Versao = "19.04.23"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -477,7 +477,7 @@ def PlayMRC2(): #96 Play filmes
 			file = mp4[0][1]+".mp4"
 			global background
 			background=url+";;;"+name+";;;RC"
-			PlayUrl("[B][COLOR yellow]"+ name +" [/COLOR][/B]", url2 + file + "?play", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", url2 + file + "?play", iconimage, desc) #aqui
 			#AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , url2 + file + "?play", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
@@ -489,7 +489,7 @@ def PlaySRC(): #133 Play series
 	try:
 		url2 = re.sub('redecanais\.[^\/]+', "redecanais.xyz", url.replace("https","http") )
 		link = common.OpenURL(proxy+url2)
-		desc = re.compile('<p itemprop=\"description\"><p>(.+)<\/p><\/p>').findall(link)
+		desc = re.compile('itemprop=\"?description\"?>\s<p>(.+)<\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
@@ -1195,7 +1195,7 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=31&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 78:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=72&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
-	elif mode== 95:
+	elif mode== 95 or mode== 96:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=93&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 135:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=131&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
@@ -1260,15 +1260,21 @@ def ListFavorites(file, info):
 	chList = common.ReadList(file)
 	i = 0
 	for channel in chList:
-		AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), index=i, isFolder=True, IsPlayable=False, info=info)
+		if cPlayD == "true" and channel["mode"]=="95":
+			AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), "96", channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=False, IsPlayable=True, info=info)
+		else:
+			AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), index=i, isFolder=True, IsPlayable=False, info=info)
 		i += 1
 		
 def ListHistoric(file, info):
 	file = os.path.join(addon_data_dir, file)
 	chList = common.ReadList(file)
 	for channel in reversed(chList):
-		AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info=info)
-
+		if cPlayD == "true" and channel["mode"]=="95":
+			AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), "96", channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=False, IsPlayable=True, info=info)
+		else:
+			AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info=info)
+		
 def RemoveFromLists(index, listFile):
 	chList = common.ReadList(listFile) 
 	if index < 0 or index >= len(chList):
