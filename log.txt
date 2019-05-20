@@ -95,3 +95,4 @@
 19.04.22 - Fix RC
 19.04.23 - Fix historic
 19.05.08 - Fix RC
+19.05.20 - DNS auto RC
