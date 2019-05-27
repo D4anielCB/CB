@@ -242,7 +242,7 @@ def PlayS(): #62
 			i+=1
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
-			PlayUrl(name, listal[d], iconimage, info)
+			PlayUrl(name, listal[d]+"|Referer=http://.netcine.us&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
 	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 # --------------------------------------
@@ -316,7 +316,7 @@ def PlayMNC(): #79
 		if d!= -1:
 			global background
 			background=background+";;;"+name+";;;NC"
-			PlayUrl(name, listal[d], iconimage, info)
+			PlayUrl(name, listal[d]+"|Referer=http://.netcine.us&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def Generos(): #80
