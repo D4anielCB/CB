@@ -97,3 +97,4 @@
 19.05.08 - Fix RC
 19.05.20 - DNS auto RC
 19.05.27 - Series Dub/Leg RC
+19.05.30 - Canais RC auto
