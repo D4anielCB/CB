@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.05.27"
+Versao = "19.05.30"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -86,7 +86,7 @@ def getLocaleString(id):
 
 def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
-	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
+	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR white][B][Séries/Animes/Desenhos][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR gold][B][Filmes Favoritos Cube Play][/B][/COLOR]", "" ,301 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
@@ -459,7 +459,7 @@ def PlayMRC(): #95 Play filmes
 			#m = re.compile(reg, re.IGNORECASE).findall(pb)
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?play", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?rc", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 			pass
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
@@ -490,7 +490,7 @@ def PlayMRC2(): #96 Play filmes
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "?play", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "/playlist.m3u8?rc", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -524,7 +524,7 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] )
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			PlayUrl(name, file[0] + "?play", iconimage, name)
+			PlayUrl(name, file[0] + "/playlist.m3u8?rc", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -735,26 +735,45 @@ def Busca(): # 160
 # ----------------- FIM BUSCA
 # ----------------- TV Cubeplay
 def TVCB(x): #102
-	try:
-		#AddDir("a", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
-		link = common.OpenURL(x)
-		link = re.sub('^.{3}', "", link )
-		m = re.compile('(.+)\?(.+)').findall(link)
-		i=0
-		for name2,url2 in m:
-			if cadulto=="8080":
-				AddDir(getmd5(name2), url2, 103, " ", " ", isFolder=False, IsPlayable=True, info="")
-				i+=1
-			elif not "dulto" in getmd5(name2):
-				AddDir(getmd5(name2), url2, 103, " ", " ", isFolder=False, IsPlayable=True, info="")
-				i+=1
-	except:
-		AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
+	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
+	link = common.OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","")
+	if cadulto!="8080":
+		link = re.sub('Adulto.+', "", link)
+	m = re.compile('url="(.+?)".mg="(.+?)".ame="(.+?)"').findall(link)
+	#ST(m)
+	for url2,img2,name2 in m:
+		AddDir(name2 , url2, 103, img2, img2, isFolder=False, IsPlayable=True)
+	
+	#try:
+	#AddDir("Play", m[0], 50, "", "", isFolder=False, IsPlayable=True, info="")
+	#	link = common.OpenURL(x)
+	#	link = re.sub('^.{3}', "", link )
+	#	m = re.compile('(.+)\?(.+)').findall(link)
+	#	i=0
+	#	for name2,url2 in m:
+	#		if cadulto=="8080":
+	#			AddDir(getmd5(name2), url2, 103, " ", " ", isFolder=False, IsPlayable=True, info="")
+	#			i+=1
+	#		elif not "dulto" in getmd5(name2):
+	#			AddDir(getmd5(name2), url2, 103, " ", " ", isFolder=False, IsPlayable=True, info="")
+	#			i+=1
+	#except:
+	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
-	try:
-		PlayUrl(name, getmd5(url), "", "", "")
-	except urllib2.URLError, e:
-		xbmcgui.Dialog().ok('Cube Play', "Servidor offline, tente novamente em alguns minutos")
+	link = common.OpenURL("https://canaisgratis.net/"+url)
+	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
+	player = re.sub('.php', "vibgratis.php", player[0] )
+	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
+	m = re.compile('http.{10,50}?m3u8').findall(link2)
+	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
+	#ST(m[0])
+	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
+	
+	#AddDir("Play", m[0], 50, "", "", isFolder=False, IsPlayable=True, info="")
+	#try:
+	#	PlayUrl(name, getmd5(url), "", "", "")
+	#except urllib2.URLError, e:
+	#	xbmcgui.Dialog().ok('Cube Play', "Servidor offline, tente novamente em alguns minutos")
 # ----------------- Fim TV Cubeplay
 # ----------------- REDECANAIS TV
 def Acento(x):
@@ -1557,7 +1576,7 @@ elif mode == 101:
 	PlayTVRC()
 elif mode == 102:
 	TVCB(url)
-	setViewM()
+	setViewS()
 elif mode == 103:
 	PlayTVCB()
 elif mode == 105:
