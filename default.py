@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.06.27"
+Versao = "19.06.28"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -530,10 +530,10 @@ def PlaySRC(): #133 Play series
 	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def TemporadasRC(x): #135 Episodios
-	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http","https") )
+	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
 	if not "redecanais" in url2:
 		url2 = "https://www."+ RC + url2
-	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("http","https")
+	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("http\:","https\:")
 	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
 	i= 0
 	if background=="None":
@@ -618,7 +618,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 	except urllib2.URLError, e:
 		AddDir("Server error, tente novamente em alguns minutos" , url, 0, "", "")
 def AllEpisodiosRC(): #139 Mostrar todos Epi
-	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http","https") )
+	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
 	if not "redecanais" in url2:
 		url2 = "https://www."+ RC + url2
 	link = common.OpenURL(url2)
@@ -1258,6 +1258,9 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=31&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 78:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=72&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
+	elif (mode== 95 or mode== 96) and cadulto=="update":
+		liz.addContextMenuItems(items = [("IMDB", 'XBMC.RunPlugin({0}?url={1}&mode=350&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name))),
+		("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=93&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 95 or mode== 96:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=93&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 135:
@@ -1296,6 +1299,59 @@ def GetSourceLocation(title, chList):
 	answer = dialog.select(title, chList)
 	return answer
 	
+def AddImdb(url): #350
+	dir = re.sub('CubePlay', 'CubePlayMeta', addon_data_dir )
+	file = os.path.join(dir, 'imdb.txt')
+	favList = common.ReadList(file)
+	for item in favList:
+		if item["url"].lower() == url.decode("utf-8").lower():
+			if "imdb" in file:
+				xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30011), icon))
+			return	
+
+	q = re.sub('\((Dub|Leg)[^\(]+', '', name )
+	q = urllib.quote(re.sub('\[\/?COLOR.{0,10}\]', '', q ))
+	#q = "xmen"
+	#ST(q)
+	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+q)
+	jq = json.loads(urlq)
+	nomes=[]
+	c1=""
+	c2=""
+	for x in jq['results']:
+		try:
+			nomes.append("["+x['release_date'][2]+ x['release_date'][3] + "] " +x['title'])
+		except:
+			nomes.append("[xx]"+x['title'])
+	s = xbmcgui.Dialog().select("Escolha um título:", nomes)
+	if s == -1:
+		d = xbmcgui.Dialog().input("IMDB id")
+		#d = "tt7374948"
+		if not "tt" in d:
+			d = "tt" + d
+		if len(d)==2:
+			return
+		url2 = common.OpenURL("https://www.imdb.com/title/"+d)
+		m = re.compile("\"name\"\:.?\"([^\"]+)").findall(url2)
+		d2 = xbmcgui.Dialog().yesno("Kodi",m[0]+" ?")
+		c1=m[0]
+		c2=d
+		if not d2:
+			return
+	else:
+		c1=jq['results'][s]['title']
+		c2=str(jq['results'][s]['id'])
+	chList = []	
+	for channel in chList:
+		if channel["name"].lower() == name.decode("utf-8").lower():
+			url = channel["url"].encode("utf-8")
+			break
+	data = {"url": url.decode("utf-8"), "id": c2, "name": c1}
+	favList.append(data)
+	common.SaveList(file, favList)
+	if "imdb" in file:
+		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, c1, getLocaleString(30012), icon))
+
 def AddFavorites(url, iconimage, name, mode, file):
 	file = os.path.join(addon_data_dir, file)
 	favList = common.ReadList(file)
@@ -1345,7 +1401,7 @@ def RemoveFromLists(index, listFile):
 	del chList[index]
 	common.SaveList(listFile, chList)
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
-		
+
 def AddNewFavorite(file):
 	file = os.path.join(addon_data_dir, file)
 	chName = GetKeyboardText(getLocaleString(30014))
@@ -1657,6 +1713,8 @@ elif mode == 221:
 	setViewM()
 elif mode == 229:
 	PlayFilmes96()
+elif mode == 350:
+	AddImdb(url)
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 #checkintegrity25852
