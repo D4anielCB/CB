@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.06.28"
+Versao = "19.07.03"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -1300,57 +1300,62 @@ def GetSourceLocation(title, chList):
 	return answer
 	
 def AddImdb(url): #350
+	urlm= re.compile("_.+?html$").findall(url)
+	urlm = urlm[0]
 	dir = re.sub('CubePlay', 'CubePlayMeta', addon_data_dir )
 	file = os.path.join(dir, 'imdb.txt')
 	favList = common.ReadList(file)
 	for item in favList:
-		if item["url"].lower() == url.decode("utf-8").lower():
+		if item["url"].lower() == urlm.decode("utf-8").lower():
 			if "imdb" in file:
 				xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30011), icon))
 			return	
 
-	q = re.sub('\((Dub|Leg)[^\(]+', '', name )
+	q = re.sub(' ?\((Dub|Leg|Nac).+', '', name )
 	q = urllib.quote(re.sub('\[\/?COLOR.{0,10}\]', '', q ))
 	#q = "xmen"
-	#ST(q)
-	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+q)
+	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+q+"&language=pt-BR")
 	jq = json.loads(urlq)
 	nomes=[]
 	c1=""
 	c2=""
+	c3=""
 	for x in jq['results']:
 		try:
 			nomes.append("["+x['release_date'][2]+ x['release_date'][3] + "] " +x['title'])
 		except:
-			nomes.append("[xx]"+x['title'])
-	s = xbmcgui.Dialog().select("Escolha um título:", nomes)
+			nomes.append("[xx]"+x['title'].encode("utf-8"))
+	s=-1
+	if nomes:
+		s = xbmcgui.Dialog().select(name, nomes)
 	if s == -1:
-		d = xbmcgui.Dialog().input("IMDB id")
-		#d = "tt7374948"
-		if not "tt" in d:
-			d = "tt" + d
-		if len(d)==2:
+		d = xbmcgui.Dialog().input("TheMovie id")
+		#d = "299537"
+		if not d:
 			return
-		url2 = common.OpenURL("https://www.imdb.com/title/"+d)
-		m = re.compile("\"name\"\:.?\"([^\"]+)").findall(url2)
-		d2 = xbmcgui.Dialog().yesno("Kodi",m[0]+" ?")
-		c1=m[0]
+		url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
+		j = json.loads(url2)
+		c1=j['title']
 		c2=d
+		c3=j['original_title']
+		d2 = xbmcgui.Dialog().yesno("Kodi",j['title']+" ?")
 		if not d2:
 			return
 	else:
 		c1=jq['results'][s]['title']
 		c2=str(jq['results'][s]['id'])
-	chList = []	
+		c3=jq['results'][s]['original_title']
+	chList = []
 	for channel in chList:
 		if channel["name"].lower() == name.decode("utf-8").lower():
-			url = channel["url"].encode("utf-8")
+			urlm = channel["url"].encode("utf-8")
 			break
-	data = {"url": url.decode("utf-8"), "id": c2, "name": c1}
+	#ST(c1.encode("utf-8"))
+	data = {"url": urlm.decode("utf-8"), "id": c2, "nome": c1, "name": c3}
 	favList.append(data)
 	common.SaveList(file, favList)
 	if "imdb" in file:
-		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, c1, getLocaleString(30012), icon))
+		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, c1.encode("utf-8"), getLocaleString(30012), icon))
 
 def AddFavorites(url, iconimage, name, mode, file):
 	file = os.path.join(addon_data_dir, file)
