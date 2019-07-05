@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.07.03"
+Versao = "19.07.05"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -338,24 +338,34 @@ def MoviesRCD(): #90 Filme dublado
 		if int(cPage) > 0:
 			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(cPage) ) +"[/B]][/COLOR]", cPage , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPage")
 		l= int(cPage)*5
+		exurl=['']
+		if "imdb" in cadulto:
+			dir = re.sub('CubePlay', 'CubePlayMeta', addon_data_dir )
+			file = os.path.join(dir, 'imdb.txt')
+			chList = common.ReadList(file)
+			exurl = re.compile('\_[^\']+').findall(str(chList))
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL(proxy+"https://www."+RC+"browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
 				link = common.OpenURL(proxy+"https://www."+RC+"browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
+			match = re.compile('href=\".{1,35}(\_[^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+RC, url2 )
-					if cPlayD == "true":
+					if cPlayD == "true" and "imdb" in cadulto:
+						if not url2 in exurl:
+							AddDir(name2 ,url2, 350, img2, img2, info="", isFolder=False, IsPlayable=False)
+					elif cPlayD == "true":
 						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
 					else:
 						AddDir(name2 ,url2, 95, img2, img2, info="")
 					p += 1
 			else:
 				break
-		if p >= 40:
-			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
+		#ST(p)
+		#if p >= 40:
+		AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCL(): #91 Filme Legendado
@@ -1317,14 +1327,15 @@ def AddImdb(url): #350
 	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+q+"&language=pt-BR")
 	jq = json.loads(urlq)
 	nomes=[]
-	c1=""
-	c2=""
-	c3=""
+	Ano=""
+	Vote = 0.0
 	for x in jq['results']:
+		#ST(x['release_date'][2] + x['release_date'][3])
 		try:
-			nomes.append("["+x['release_date'][2]+ x['release_date'][3] + "] " +x['title'])
+			rd = re.sub('\d{2}(\d{2})\-.+', r'\1', x['release_date'] )
+			nomes.append("["+ str(rd) + "] " +x['title'].encode("utf-8") + " [COLOR blue]("+x['original_title'].encode("utf-8")+")[/COLOR]")
 		except:
-			nomes.append("[xx]"+x['title'].encode("utf-8"))
+			nomes.append("[xx]"+x['title'].encode("utf-8") + " [COLOR blue]("+x['original_title'].encode("utf-8")+")[/COLOR]")
 	s=-1
 	if nomes:
 		s = xbmcgui.Dialog().select(name, nomes)
@@ -1335,27 +1346,31 @@ def AddImdb(url): #350
 			return
 		url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
 		j = json.loads(url2)
-		c1=j['title']
-		c2=d
-		c3=j['original_title']
-		d2 = xbmcgui.Dialog().yesno("Kodi",j['title']+" ?")
+		Nome=j['title']
+		Id=d
+		Name=j['original_title']
+		Ano = j['release_date']
+		d2 = xbmcgui.Dialog().yesno("Kodi",Nome+" ?")
 		if not d2:
 			return
 	else:
-		c1=jq['results'][s]['title']
-		c2=str(jq['results'][s]['id'])
-		c3=jq['results'][s]['original_title']
+		Nome=jq['results'][s]['title']
+		Id=str(jq['results'][s]['id'])
+		Name=jq['results'][s]['original_title']
+		Ano = jq['results'][s]['release_date']
+		Vote = jq['results'][s]['vote_average']
+	Ano = re.sub('\-.+', '', Ano )
 	chList = []
 	for channel in chList:
 		if channel["name"].lower() == name.decode("utf-8").lower():
 			urlm = channel["url"].encode("utf-8")
 			break
 	#ST(c1.encode("utf-8"))
-	data = {"url": urlm.decode("utf-8"), "id": c2, "nome": c1, "name": c3}
+	data = {"url": urlm.decode("utf-8"), "id": Id, "nome": Nome, "name": Name, "ano": Ano, "vote": Vote}
 	favList.append(data)
 	common.SaveList(file, favList)
 	if "imdb" in file:
-		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, c1.encode("utf-8"), getLocaleString(30012), icon))
+		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, Nome.encode("utf-8"), getLocaleString(30012), icon))
 
 def AddFavorites(url, iconimage, name, mode, file):
 	file = os.path.join(addon_data_dir, file)
@@ -1536,8 +1551,9 @@ metah = params.get('metah')
 if mode == 0:
 	Categories()
 	setViewM()
-	if cadulto!="update":
-		CheckUpdate(False)	
+	if not "update" in cadulto:
+		ST(1)
+		CheckUpdate(False)
 elif mode == -1: MCanais()
 elif mode == -2: MFilmes()
 elif mode == -3: MSeries()
