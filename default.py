@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.07.05"
+Versao = "19.07.16"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -49,7 +49,7 @@ CatGO = Addon.getSetting("CatGO")
 cSIPTV = Addon.getSetting("cSIPTV")
 
 Clista=[ "todos",                     "acao", "animacao", "aventura", "comedia", "drama", "fantasia", "ficcao-cientifica", "romance", "suspense", "terror"]
-Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "Ficcao-Cientifica", "Romance", "Suspense", "Terror"]
+Clista2=["Sem filtro (Mostrar Todos)","Acao", "Animacao", "Aventura", "Comedia", "Drama", "Fantasia", "ficcao-cientifica", "Romance", "Suspense", "Terror"]
 Clista3=["Sem filtro (Mostrar Todos)","Ação", "Animação", "Aventura", "Comédia", "Drama", "Fantasia", "Ficção-Científica", "Romance", "Suspense", "Terror"]
 Clistafo0=[ "0",                        "48",         "3",    "7",        "8",        "5",       "4",      "14",                "16",      "15",       "11"]
 Clistafo1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação", "Animação", "Aventura", "Comédia", "Drama",  "Ficção-Científica", "Romance", "Suspense", "Terror"]
@@ -86,6 +86,7 @@ def getLocaleString(id):
 
 def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
+	#AddDir("[COLOR white][B][Canais de TV1][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR white][B][Séries/Animes/Desenhos][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
@@ -340,6 +341,7 @@ def MoviesRCD(): #90 Filme dublado
 		l= int(cPage)*5
 		exurl=['']
 		if "imdb" in cadulto:
+			AddDir("[COLOR maroon]Reload[/COLOR]" , "", 50, isFolder=False)
 			dir = re.sub('CubePlay', 'CubePlayMeta', addon_data_dir )
 			file = os.path.join(dir, 'imdb.txt')
 			chList = common.ReadList(file)
@@ -347,9 +349,11 @@ def MoviesRCD(): #90 Filme dublado
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL(proxy+"https://www."+RC+"browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
+			#ST(link)
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL(proxy+"https://www."+RC+"browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
-			match = re.compile('href=\".{1,35}(\_[^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
+				link = common.OpenURL(proxy+"https://www."+RC+"browse-"+Clista2[int(Cat)]+"-filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
+			match = re.compile('href=\".{1,100}(\_[^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
+			#match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+RC, url2 )
@@ -364,8 +368,8 @@ def MoviesRCD(): #90 Filme dublado
 			else:
 				break
 		#ST(p)
-		#if p >= 40:
-		AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
+		if p >= 40:
+			AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(cPage) + 2) +"[/B]][/COLOR]", cPage , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPage")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def MoviesRCL(): #91 Filme Legendado
@@ -776,6 +780,7 @@ def PlayTVCB(): #103
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
+	link3 = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_grc.php?u="+m[0])
 	#ST(m[0])
 	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
 	
@@ -1268,7 +1273,7 @@ def AddDir(name, url, mode, iconimage='', logos='', index=-1, move=0, isFolder=T
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=31&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 78:
 		liz.addContextMenuItems(items = [("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=72&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
-	elif (mode== 95 or mode== 96) and cadulto=="update":
+	elif (mode== 95 or mode== 96) and "imdb" in cadulto:
 		liz.addContextMenuItems(items = [("IMDB", 'XBMC.RunPlugin({0}?url={1}&mode=350&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name))),
 		("Add ao fav. do Cube Play", 'XBMC.RunPlugin({0}?url={1}&mode=93&iconimage={2}&name={3})'.format(sys.argv[0], urllib.quote_plus(url), urllib.quote_plus(iconimage), urllib.quote_plus(name)))])
 	elif mode== 95 or mode== 96:
@@ -1314,6 +1319,7 @@ def AddImdb(url): #350
 	urlm = urlm[0]
 	dir = re.sub('CubePlay', 'CubePlayMeta', addon_data_dir )
 	file = os.path.join(dir, 'imdb.txt')
+	file2 = os.path.join(dir, Cat+'\\imdb'+cPage+'.txt')
 	favList = common.ReadList(file)
 	for item in favList:
 		if item["url"].lower() == urlm.decode("utf-8").lower():
@@ -1330,7 +1336,6 @@ def AddImdb(url): #350
 	Ano=""
 	Vote = 0.0
 	for x in jq['results']:
-		#ST(x['release_date'][2] + x['release_date'][3])
 		try:
 			rd = re.sub('\d{2}(\d{2})\-.+', r'\1', x['release_date'] )
 			nomes.append("["+ str(rd) + "] " +x['title'].encode("utf-8") + " [COLOR blue]("+x['original_title'].encode("utf-8")+")[/COLOR]")
@@ -1341,14 +1346,16 @@ def AddImdb(url): #350
 		s = xbmcgui.Dialog().select(name, nomes)
 	if s == -1:
 		d = xbmcgui.Dialog().input("TheMovie id")
-		#d = "299537"
+		#d = "503314"
 		if not d:
 			return
 		url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
 		j = json.loads(url2)
+		url3 = common.OpenURL("https://api.themoviedb.org/3/movie/"+str(j['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
+		j3 = json.loads(url3)
 		Nome=j['title']
 		Id=d
-		Name=j['original_title']
+		Name=j3['title']
 		Ano = j['release_date']
 		d2 = xbmcgui.Dialog().yesno("Kodi",Nome+" ?")
 		if not d2:
@@ -1359,16 +1366,22 @@ def AddImdb(url): #350
 		Name=jq['results'][s]['original_title']
 		Ano = jq['results'][s]['release_date']
 		Vote = jq['results'][s]['vote_average']
+		if jq['results'][s]['original_language'] != 'en':
+			url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+str(jq['results'][s]['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
+			j2 = json.loads(url2)
+			Name=j2['title']
 	Ano = re.sub('\-.+', '', Ano )
 	chList = []
 	for channel in chList:
 		if channel["name"].lower() == name.decode("utf-8").lower():
 			urlm = channel["url"].encode("utf-8")
 			break
-	#ST(c1.encode("utf-8"))
 	data = {"url": urlm.decode("utf-8"), "id": Id, "nome": Nome, "name": Name, "ano": Ano, "vote": Vote}
+	#ST(data)
+	#return
 	favList.append(data)
 	common.SaveList(file, favList)
+	common.SaveList(file2, favList)
 	if "imdb" in file:
 		xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, Nome.encode("utf-8"), getLocaleString(30012), icon))
 
