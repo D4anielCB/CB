@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.07.16"
+Versao = "19.07.29"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -79,7 +79,7 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.tel/"
+RC="redecanais.one/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -1313,7 +1313,12 @@ def GetSourceLocation(title, chList):
 	dialog = xbmcgui.Dialog()
 	answer = dialog.select(title, chList)
 	return answer
-	
+def Imdbreturn(n):
+	n = urllib.quote(n)
+	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+n+"&language=pt-BR")
+	jq = json.loads(urlq)
+	return jq
+
 def AddImdb(url): #350
 	urlm= re.compile("_.+?html$").findall(url)
 	urlm = urlm[0]
@@ -1326,15 +1331,13 @@ def AddImdb(url): #350
 			if "imdb" in file:
 				xbmc.executebuiltin("Notification({0}, '{1}' {2}, 5000, {3})".format(AddonName, name, getLocaleString(30011), icon))
 			return	
-
 	q = re.sub(' ?\((Dub|Leg|Nac).+', '', name )
-	q = urllib.quote(re.sub('\[\/?COLOR.{0,10}\]', '', q ))
+	q = re.sub('\[\/?COLOR.{0,10}\]', '', q )
 	#q = "xmen"
-	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+q+"&language=pt-BR")
-	jq = json.loads(urlq)
 	nomes=[]
 	Ano=""
 	Vote = 0.0
+	jq = Imdbreturn(q)
 	for x in jq['results']:
 		try:
 			rd = re.sub('\d{2}(\d{2})\-.+', r'\1', x['release_date'] )
@@ -1345,22 +1348,40 @@ def AddImdb(url): #350
 	if nomes:
 		s = xbmcgui.Dialog().select(name, nomes)
 	if s == -1:
+		nomes=[]
 		d = xbmcgui.Dialog().input("TheMovie id")
-		#d = "503314"
-		if not d:
-			return
-		url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
-		j = json.loads(url2)
-		url3 = common.OpenURL("https://api.themoviedb.org/3/movie/"+str(j['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
-		j3 = json.loads(url3)
-		Nome=j['title']
-		Id=d
-		Name=j3['title']
-		Ano = j['release_date']
-		d2 = xbmcgui.Dialog().yesno("Kodi",Nome+" ?")
-		if not d2:
-			return
-	else:
+		if re.compile("\w").findall(d):
+			jq = Imdbreturn(d)
+			if jq['total_results']==0:
+				xbmc.executebuiltin("Notification({0}, {1}, 5000, {2})".format(AddonName, "Nada encontrado".encode("utf-8"), icon))
+				return
+			for x in jq['results']:
+				try:
+					rd = re.sub('\d{2}(\d{2})\-.+', r'\1', x['release_date'] )
+					nomes.append("["+ str(rd) + "] " +x['title'].encode("utf-8") + " [COLOR blue]("+x['original_title'].encode("utf-8")+")[/COLOR]")
+				except:
+					nomes.append("[xx]"+x['title'].encode("utf-8") + " [COLOR blue]("+x['original_title'].encode("utf-8")+")[/COLOR]")
+			if nomes:
+				s = xbmcgui.Dialog().select(name, nomes)
+			if s == -1:
+				return
+		else:
+			#d = "503314"
+			if not d:
+				return
+			url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
+			j = json.loads(url2)
+			url3 = common.OpenURL("https://api.themoviedb.org/3/movie/"+str(j['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
+			j3 = json.loads(url3)
+			Nome=j['title']
+			Id=d
+			Name=j3['title']
+			Ano = j['release_date']
+			d2 = xbmcgui.Dialog().yesno("Kodi",Nome+" ?")
+			if not d2:
+				return
+			jq = ""
+	if jq:
 		Nome=jq['results'][s]['title']
 		Id=str(jq['results'][s]['id'])
 		Name=jq['results'][s]['original_title']
