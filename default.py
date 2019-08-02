@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.07.29"
+Versao = "19.08.02"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -780,7 +780,7 @@ def PlayTVCB(): #103
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
-	link3 = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_grc.php?u="+m[0])
+	link3 = common.OpenURL("http://easytvonline.tk/rc/_grc.php?u="+m[0])
 	#ST(m[0])
 	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
 	
