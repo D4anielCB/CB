@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.08.02"
+Versao = "19.09.19"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -79,7 +79,7 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.one/"
+RC="redecanais.xyz/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -349,14 +349,14 @@ def MoviesRCD(): #90 Filme dublado
 		for x in range(0, 5):
 			l +=1
 			link = common.OpenURL(proxy+"https://www."+RC+"browse-filmes-dublado-videos-"+str(l)+"-"+cOrdRCF+".html")
-			#ST(link)
 			if Clista2[int(Cat)] != "Sem filtro (Mostrar Todos)":
-				link = common.OpenURL(proxy+"https://www."+RC+"browse-"+Clista2[int(Cat)]+"-filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
+				link = common.OpenURL(proxy+"https://www."+RC+"browse-"+Clista2[int(Cat)]+"-Filmes-videos-"+str(l)+"-"+cOrdRCF+".html")
 			match = re.compile('href=\".{1,100}(\_[^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			#match = re.compile('href=\"([^\"]+).{0,10}title=\"([^\"]+)\".{20,350}echo=\"([^\"]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+RC, url2 )
+					img2 = re.sub('^/', "https://www."+RC, img2 )
 					if cPlayD == "true" and "imdb" in cadulto:
 						if not url2 in exurl:
 							AddDir(name2 ,url2, 350, img2, img2, info="", isFolder=False, IsPlayable=False)
@@ -389,6 +389,7 @@ def MoviesRCL(): #91 Filme Legendado
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+RC+"", url2 )
+					img2 = re.sub('^/', "https://www."+RC, img2 )
 					if cPlayD == "true":
 						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
 					else:
@@ -414,6 +415,7 @@ def MoviesRCN(): #92 Filmes Nacional
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+RC, url2 )
+					img2 = re.sub('^/', "https://www."+RC, img2 )
 					if cPlayD == "true":
 						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
 					else:
@@ -439,6 +441,7 @@ def MoviesRCR(): # Lancamentos
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+RC, url2 )
+					img2 = re.sub('^/', "https://www."+RC, img2 )
 					if cPlayD == "true":
 						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True) 
 					else:
@@ -452,16 +455,16 @@ def MoviesRCR(): # Lancamentos
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayMRC(): #95 Play filmes
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http","https") )
-	if not "redecanais" in url2:
-		url2 = "https://www."+RC+ url2
+	url2 = re.sub('^/', "https://www."+RC, url2 )
 	try:
-		link = common.OpenURL(proxy+url2.replace("http","https"))
+		link = common.OpenURL(proxy+url2.replace("http\:","https\:"))
 		desc = re.compile('itemprop=\"?description\"?>\s.{0,10}?<p>(.+)<\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
 			player = re.sub('.php', "playerfree.php", player[0] )
+			player = re.sub('^/', "https://www."+RC, player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
@@ -474,15 +477,13 @@ def PlayMRC(): #95 Play filmes
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
-			pass
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def PlayMRC2(): #96 Play filmes
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
-	if not "redecanais" in url2:
-		url2 = "https://www."+RC+ url2
+	url2 = re.sub('^/', "https://www."+RC, url2 )
 	try:
 		link = common.OpenURL(proxy+url2.replace("http\:","https\:"))
 		desc = re.compile('itemprop=\"?description\"?>\s.{0,10}?<p>(.+)<\/p>').findall(link)
@@ -500,6 +501,7 @@ def PlayMRC2(): #96 Play filmes
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
 			player = re.sub('.php', "playerfree.php", player[0] )
+			player = re.sub('^/', "https://www."+RC, player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
@@ -536,6 +538,7 @@ def PlaySRC(): #133 Play series
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
 			player = re.sub('.php', "playerfree.php", player[0] )
+			player = re.sub('^/', "https://www."+RC, player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			PlayUrl(name, file[0] + "?attachment=true", iconimage, name)
@@ -545,8 +548,7 @@ def PlaySRC(): #133 Play series
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
-	if not "redecanais" in url2:
-		url2 = "https://www."+ RC + url2
+	url2 = re.sub('^/', "https://www."+RC, url2 )
 	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("http\:","https\:")
 	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
 	i= 0
@@ -622,6 +624,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 			if match:
 				for url2,name2,img2 in match:
 					url2 = re.sub('^\.', "https://www."+ RC , url2 )
+					img2 = re.sub('^/', "https://www."+RC, img2 )
 					if not "index.html" in url2:
 						AddDir(name2 ,url2, 135, img2, img2, info="")
 						p += 1
@@ -685,6 +688,7 @@ def Busca(): # 160
 				for img2,url2,name2 in match:
 					#url2 = re.sub('^\.', "http://www." + RC, url2 )
 					url2 = "https://www." + RC + url2
+					img2 = re.sub('^/', "https://www."+RC, img2 )
 					if re.compile('\d+p').findall(name2):
 						if cPlayD == "true":
 							AddDir("[COLOR blue]" +name2+ "[/COLOR]" ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
