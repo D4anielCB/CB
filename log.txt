@@ -105,3 +105,4 @@
 19.07.16 - urlcanal RC
 19.07.29 - improve IMDB
 19.08.02 - easytv
+19.09.19 - fix RC
