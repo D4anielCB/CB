@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.09.19"
+Versao = "19.09.21"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -781,6 +781,7 @@ def PlayTVCB(): #103
 	link = common.OpenURL("https://canaisgratis.net/"+url)
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	player = re.sub('.php', "vibgratis.php", player[0] )
+	player = re.sub('^/', "https://www."+ RC , player )
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
