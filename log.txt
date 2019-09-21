@@ -106,3 +106,4 @@
 19.07.29 - improve IMDB
 19.08.02 - easytv
 19.09.19 - fix RC
+19.09.21 - fix canais
