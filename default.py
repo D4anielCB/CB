@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.10.02"
+Versao = "19.10.05"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -168,9 +168,9 @@ def CategoryOrdem2(url):
 def Series(): #60
 	try:
 		CategoryOrdem("cOrdNCS")
-		link = common.OpenURL("http://netcine.us/tvshows/page/1/").replace('\n','').replace('\r','')
+		link = common.OpenURL("http://netcine.me/tvshows/page/1/").replace('\n','').replace('\r','')
 		l2 = re.compile("box_movies(.+)").findall(link)
-		link = common.OpenURL("http://netcine.us/tvshows/page/2/").replace('\n','').replace('\r','')
+		link = common.OpenURL("http://netcine.me/tvshows/page/2/").replace('\n','').replace('\r','')
 		l3 = re.compile("box_movies(.+)").findall(link)
 		lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0]+l3[0])
 		if cOrdNCS=="1":
@@ -231,7 +231,9 @@ def PlayS(): #62
 				red2 = re.compile('redirecionar\.php\?data=([^"]+)').findall(red1)
 				link4 = common.OpenURL(red2[0],headers={'Cookie': "autorizado=teste; "})
 				m5 = re.compile("location.href=\'([^\']+p\=[^\']+)").findall(link4)
-				link5 = common.OpenURL(m5[0])
+				for x in m5:
+					if not "openload" in x:
+						link5 = common.OpenURL(x)
 				link5 = re.sub('window.location.href.+', '', link5)
 				link5 = link5.replace("'",'"')
 				m4= re.compile("http.+?mp4[^\"]+").findall(link5)
@@ -252,19 +254,19 @@ def MoviesNC(): #71
 	CategoryOrdem("cOrdNCF")
 	try:
 		if Cat=="0":
-			link = common.OpenURL("http://netcine.us/page/1/?mt").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.me/page/1/?mt").replace('\n','').replace('\r','')
 			l1 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.us/page/2/?mt").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.me/page/2/?mt").replace('\n','').replace('\r','')
 			l2 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.us/page/3/?mt").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.me/page/3/?mt").replace('\n','').replace('\r','')
 			l3 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.us/page/4/?mt").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.me/page/4/?mt").replace('\n','').replace('\r','')
 			l4 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.us/page/5/?mt").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.me/page/5/?mt").replace('\n','').replace('\r','')
 			l5 = re.compile("box_movies(.+)").findall(link)
 			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0]+l5[0])
 		else:
-			link = common.OpenURL("http://netcine.us/category/"+Clista[int(Cat)]).replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)]).replace('\n','').replace('\r','')
 			l2 = re.compile("box_movies(.+)").findall(link)
 			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0])
 		if cOrdNCF=="1":
@@ -702,7 +704,7 @@ def Busca(): # 160
 		pass
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-		link2 = common.OpenURL("http://netcine.us/?s="+d).replace('\n','').replace('\r','')
+		link2 = common.OpenURL("http://netcine.me/?s="+d).replace('\n','').replace('\r','')
 		lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(link2)
 		for img2,name2,url2 in lista:
 			if name2!="Close" and name2!="NetCine":
