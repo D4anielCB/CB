@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.10.05"
+Versao = "19.10.06"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -248,6 +248,7 @@ def PlayS(): #62
 			PlayUrl(name, listal[d]+"|Referer=http://.netcine.us&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
 	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+		sys.exit()
 # --------------------------------------
 def MoviesNC(): #71
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista3[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
@@ -309,19 +310,23 @@ def PlayMNC(): #79
 		link3 = common.OpenURL(red[0],headers={'Cookie': "autorizado=teste; "})
 		link3 = re.sub('window.location.+', '', link3)
 		link3 = link3.replace("'",'"')
-		m4= re.compile("http.+?mp4[^\"]+").findall(link3) 
+		m4= re.compile("http.+?mp4[^\"]{0,150}").findall(link3) 
 		m4 = list(reversed(m4))
 		for url4 in m4:
-			listal.append(url4.replace("';",""))
-			dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
-			listaf.append("[B]"+dubleg)
+			if not "openload" in url4:
+				listal.append(url4.replace("';",""))
+				dubleg="[COLOR green]HD[/COLOR][/B]" if "ALTO" in url4 else "[COLOR red]SD[/COLOR][/B]"
+				listaf.append("[B]"+dubleg)
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
 			global background
 			background=background+";;;"+name+";;;NC"
 			PlayUrl(name, listal[d]+"|Referer=http://.netcine.us&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
+		else:
+			sys.exit()
 	except urllib2.URLError, e:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+		sys.exit()
 def Generos(): #80
 	d = xbmcgui.Dialog().select("Escolha o Genero", Clista3)
 	if d != -1:
@@ -512,7 +517,8 @@ def PlayMRC2(): #96 Play filmes
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
-		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
+		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+		sys.exit()
 # ----------------- FIM REDECANAIS
 # --------------  REDECANAIS SERIES,ANIMES,DESENHOS
 def PlaySRC(): #133 Play series
@@ -548,6 +554,7 @@ def PlaySRC(): #133 Play series
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+		sys.exit()
 def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
 	url2 = re.sub('^/', "https://www."+RC, url2 )
@@ -1013,30 +1020,34 @@ def PlayLinkMM(): #182
 	link = common.OpenURL(url,headers={'referer': "http://www.mmfilmes.tv/"})
 	m = re.compile('addiframe\(\'([^\']+)').findall(link)
 	if m:
-		m[0] = "http://player.mmfilmes.tv" + m[0] if not "http" in m[0] else m[0]
-		link2 = common.OpenURL(re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', m[0]),headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
-		m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
-		legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
-		listar=[]
-		listal=[]
-		for link,res in m2:
-			listal.append(link)
-			listar.append(res)
-		if len(listal) <1:
-			xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
-			sys.exit(int(sys.argv[1]))
-		d = xbmcgui.Dialog().select("Selecione a resolução", listar)
-		if d!= -1:
-			url2 = re.sub(' ', '%20', listal[d] )
-			global background
-			background=background+";;;"+name+";;;MM"
-			if legenda:
-				legenda = re.sub(' ', '%20', legenda[0][0] )
-				if not "http" in legenda:
-					legenda = "http://player.mmfilmes.tv/" + legenda
-				PlayUrl(name, url2, iconimage, info, sub=legenda)
-			else:
-				PlayUrl(name, url2, iconimage, info)
+		try:
+			m[0] = "http://player.mmfilmes.tv" + m[0] if not "http" in m[0] else m[0]
+			link2 = common.OpenURL(re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', m[0]),headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
+			m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
+			legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
+			listar=[]
+			listal=[]
+			for link,res in m2:
+				listal.append(link)
+				listar.append(res)
+			if len(listal) <1:
+				xbmcgui.Dialog().ok('Cube Play', 'Erro, video não encontrado')
+				sys.exit(int(sys.argv[1]))
+			d = xbmcgui.Dialog().select("Selecione a resolução", listar)
+			if d!= -1:
+				url2 = re.sub(' ', '%20', listal[d] )
+				global background
+				background=background+";;;"+name+";;;MM"
+				if legenda:
+					legenda = re.sub(' ', '%20', legenda[0][0] )
+					if not "http" in legenda:
+						legenda = "http://player.mmfilmes.tv/" + legenda
+					PlayUrl(name, url2, iconimage, info, sub=legenda)
+				else:
+					PlayUrl(name, url2, iconimage, info)
+		except:
+			xbmcgui.Dialog().ok('Cube Play', 'Erro, servidor offline')
+			sys.exit()
 # -----------------
 def ListSerieMM(): #190
 	try:
