@@ -109,3 +109,4 @@
 19.09.21 - fix canais
 19.10.02 - UPDATE
 19.10.05 - netcine.me
+19.10.06 - some fixes sys.exit
