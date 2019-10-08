@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.10.06"
+Versao = "19.10.07"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -87,7 +87,7 @@ def getLocaleString(id):
 def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	#AddDir("[COLOR white][B][Canais de TV1][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
-	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 102, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
+	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 102, "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png", "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png")
 	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR white][B][Séries/Animes/Desenhos][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR gold][B][Filmes Favoritos Cube Play][/B][/COLOR]", "" ,301 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
@@ -787,10 +787,12 @@ def TVCB(x): #102
 	#except:
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
-	link = common.OpenURL("https://canaisgratis.net/"+url)
+	#ST(url)
+	#link = common.OpenURL("https://canaisgratis.top/"+url)
+	link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
-	player = re.sub('.php', "vibgratis.php", player[0] )
-	player = re.sub('^/', "https://www."+ RC , player )
+	#player = re.sub('.php', "vibgratis.php", player[0] )
+	player = re.sub('^/', "https://canaisgratis.top/" , player[0] )
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
@@ -1021,7 +1023,7 @@ def PlayLinkMM(): #182
 	m = re.compile('addiframe\(\'([^\']+)').findall(link)
 	if m:
 		try:
-			m[0] = "http://player.mmfilmes.tv" + m[0] if not "http" in m[0] else m[0]
+			m[0] = "https://player.mrhd.tv/" + m[0] if not "http" in m[0] else m[0]
 			link2 = common.OpenURL(re.sub('(\/.{1,25}\/).{1,10}\/', r'\1', m[0]),headers={'referer': "http://player.mmfilmes.tv"}).replace("file","\nfile")
 			m2 = re.compile('file.+?(h[^\']+).+?(\d+p)\'').findall(link2)
 			legenda = re.compile('([^\']+\.(vtt|srt|sub|ssa|txt|ass))').findall(link2)
@@ -1041,7 +1043,7 @@ def PlayLinkMM(): #182
 				if legenda:
 					legenda = re.sub(' ', '%20', legenda[0][0] )
 					if not "http" in legenda:
-						legenda = "http://player.mmfilmes.tv/" + legenda
+						legenda = "https://player.mrhd.tv/" + legenda
 					PlayUrl(name, url2, iconimage, info, sub=legenda)
 				else:
 					PlayUrl(name, url2, iconimage, info)
@@ -1103,7 +1105,7 @@ def ListEpiMM(x): #192
 	dubleg = re.compile("t \=\= \'([^\']+)(.+?\})").findall( m3[int(x)][1] )
 	epi = re.compile("e \=\= (\d+).+?addiframe\(\'([^\']+)").findall( m3[int(x)][1] )
 	for e,url2 in epi:
-		url2 = "http://player.mmfilmes.tv" + url2 if not "http" in url2 else url2
+		url2 = "https://player.mrhd.tv/" + url2 if not "http" in url2 else url2
 		if p == int(e) :
 			r+=1
 		if len(dubleg[r][1]) < 30:
@@ -1128,7 +1130,7 @@ def PlaySMM(): #194
 			if leg:
 				legenda = leg
 				if not "http" in legenda:
-					legenda = "http://player.mmfilmes.tv/" + legenda
+					legenda = "https://player.mrhd.tv/" + legenda
 				legenda = re.sub(' ', '%20', legenda )
 		d = xbmcgui.Dialog().select("Selecione a resolução, cdn", listar)
 		if d!= -1:
