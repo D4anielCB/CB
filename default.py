@@ -1,7 +1,7 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.10.07"
+Versao = "19.10.25"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -115,6 +115,7 @@ def MFilmes(): #-2
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR purple][B][Filmes FilmesOnline.online][/B][/COLOR]" , "", 170, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
+	AddDir("[COLOR lightgreen][B][Filmes Superflix.net][/B][/COLOR]" , "", 411, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
 	setViewM()
 def MSeries(): #-3
 	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
@@ -788,8 +789,8 @@ def TVCB(x): #102
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
 	#ST(url)
-	#link = common.OpenURL("https://canaisgratis.top/"+url)
-	link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
+	link = common.OpenURL("https://canaisgratis.top/"+url)
+	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	#player = re.sub('.php', "vibgratis.php", player[0] )
 	player = re.sub('^/', "https://canaisgratis.top/" , player[0] )
@@ -1222,6 +1223,80 @@ def PlayGO(): #211
 	except:
 		xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")
 # ----------------- Fim Go Filmes
+# ----------------- Inicio Superflix
+def ListMovieSF(): #411:
+	l = common.OpenURL("http://www.superflix.net/categoria/assistir-filmes-de-acao-online/");
+	m = re.compile('li class\=\"TPostMv\"(.+?)\<.li\>').findall(l)
+	for ll in m:
+		mm = re.compile('href\=\"([^\"]+).{1,100}src=\"([^\"]+).{1,100}itle\"\>([^\<]+).{1,100}ear\"\>([^\<]+)').findall(ll)
+		for url2,img2,name2,year2 in mm:
+			img2 = "http:"+img2 if not "http" in img2 else img2
+			AddDir(name2+" ("+year2+")", url2, 405, img2, img2,isFolder=False,IsPlayable=True)
+# -----------------
+def PlaySSF(): #405
+	try:
+		l = common.OpenURL(url)
+		m = re.compile("\<iframe.{1,100}src\=\"([^\"]+trid[^\"]+)").findall(l)
+		trem = re.compile("http.{10,50}trembed[^\"| ]+").findall(l)
+		legsub = re.compile("data-tplayernv.+?<span>([^\<]+)").findall(l.replace("<span>SuperFlix</span>",""))
+		if not legsub:
+			xbmcgui.Dialog().ok('Cube Play', "Episódio ainda não disponível")
+			sys.exit()
+		if len(legsub) == 1:
+			d = 0
+		else:
+			d = xbmcgui.Dialog().select("Escolha:", legsub)
+		if not d == -1:
+			trem2 = trem[d].replace("#038;","").replace("&amp;","&")
+			l2 = common.OpenURL(trem2)
+			m2 = re.compile("(http.+\/play\/([^\"|?]+))").findall(l2)
+			msub = re.compile("vlsub\=([^\"|?]+)").findall(l2)
+			if not m2:
+				PlaySSF2(l2)
+				sys.exit()
+		leg = "https://sub.sfplayer.net/subdata/"+msub[0] if msub else ""
+		mp4 = RetLinkSF(m2[0][1])
+		if not mp4:
+			sys.exit()
+		mp4m = re.compile("RESOLUTION\=.+x([^\s]+)\n(.+)").findall(mp4[1])
+		if not mp4m:
+			mp42 = mp4[0]+"/hls/"+m2[0][1]+".playlist.m3u8"
+			PlayUrl(name, mp42, iconimage, info, sub=leg)
+			sys.exit()
+		#mp4m.sort()
+		mp4m = sorted(mp4m, key=lambda k: k[0], reverse=True)
+		mp4r=[]
+		mp4u=[]
+		for res2,url2 in mp4m:
+			mp4r.append(res2.replace("999","1080")+"p")
+			mp4u.append(url2)
+		d2 = xbmcgui.Dialog().select("Escolha a resolução:", mp4r)
+		if not d2 == -1:
+			PlayUrl(name, mp4[0]+mp4u[d2], iconimage, info, sub=leg)
+		system.exit()
+		#PlayUrl(name, "plugin://plugin.video.gdrive?mode=streamURL&amp;url="+"https://slave2.sfplayer.net/hls/a6ebb20cd567cc52309a965ee2cd82b7.playlist.m3u8", iconimage, info, sub=leg)
+	except:
+		sys.exit()
+def RetLinkSF(x):
+	for s in range(1, 8):
+		x2 = "https://slave"+str(s)+".sfplayer.net/hls/"+x+".playlist.m3u8"
+		try:
+			l = common.OpenURL(x2)
+			if len(l) > 20:
+				return ["https://slave"+str(s)+".sfplayer.net/",l.replace("1080","999")]
+		except urllib2.URLError, e:
+			pass
+def PlaySSF2(x):
+	api = re.compile("http[^\"]+api[^\"]+").findall(x)
+	if not api:
+		sys.exit()
+	l = common.OpenURL(api[0])
+	m = re.compile("iframe.{1,10}(http[^\"]+api[^\"]+)").findall(l)
+	l2 = common.OpenURL(m[0])
+	m2 = re.compile('http[^\"]+file.{1,5}\/([^\/"]+)').findall(l2)
+	url2 = "https://drive.google.com/file/d/"+m2[0]+"/edit"
+	PlayUrl(name, "plugin://plugin.video.gdrive?mode=streamURL&amp;url="+url2.encode('utf-8'), iconimage, info)
+# ----------------- Fim Superflix
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
 	choiceList = [getLocaleString(choiceFile), getLocaleString(choiceUrl)]
@@ -1789,6 +1864,11 @@ elif mode == 229:
 	PlayFilmes96()
 elif mode == 350:
 	AddImdb(url)
+elif mode == 411:
+	ListMovieSF()
+	setViewM()
+elif mode == 405:
+	PlaySSF()
 	
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
 #checkintegrity25852
