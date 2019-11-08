@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.10.25"
+Versao = "19.11.08"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -63,6 +63,10 @@ def setViewS():
 	xbmc.executebuiltin("Container.SetViewMode(50)")
 def setViewM():
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
+	xbmc.executebuiltin("Container.SetViewMode(50)")
+def setViewM2():
+	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
+	xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL)
 	xbmc.executebuiltin("Container.SetViewMode(50)")
 	
 favfilmesFile = os.path.join(addon_data_dir, 'favoritesf.txt')
@@ -1225,13 +1229,18 @@ def PlayGO(): #211
 # ----------------- Fim Go Filmes
 # ----------------- Inicio Superflix
 def ListMovieSF(): #411:
-	l = common.OpenURL("http://www.superflix.net/categoria/assistir-filmes-de-acao-online/");
-	m = re.compile('li class\=\"TPostMv\"(.+?)\<.li\>').findall(l)
-	for ll in m:
-		mm = re.compile('href\=\"([^\"]+).{1,100}src=\"([^\"]+).{1,100}itle\"\>([^\<]+).{1,100}ear\"\>([^\<]+)').findall(ll)
-		for url2,img2,name2,year2 in mm:
-			img2 = "http:"+img2 if not "http" in img2 else img2
-			AddDir(name2+" ("+year2+")", url2, 405, img2, img2,isFolder=False,IsPlayable=True)
+	for x in range(1, 11):
+		try:
+			l = common.OpenURL("http://www.superflix.net/categoria/assistir-filmes-lancamentos-2019-online/page/"+str(x))
+			m = re.compile('li class\=\"TPostMv\"(.+?)\<.li\>').findall(l)
+			for ll in m:
+				mm = re.compile('href\=\"([^\"]+).{1,100}src=\"([^\"]+).{1,100}itle\"\>([^\<]+).{1,100}ear\"\>([^\<]+)').findall(ll)
+				for url2,img2,name2,year2 in mm:
+					img2 = "http:"+img2 if not "http" in img2 else img2
+					name2 = name2.replace("#038;","").replace("&#8211;","-")
+					AddDir(name2+" ("+year2+")", url2, 405, img2, img2,isFolder=False,IsPlayable=True)
+		except:
+			pass
 # -----------------
 def PlaySSF(): #405
 	try:
