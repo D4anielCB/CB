@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.11.08"
+Versao = "19.11.12"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -32,6 +32,8 @@ cPagefo1 = Addon.getSetting("cPagefo1")
 cPageMMf = Addon.getSetting("cPageMMf")
 cPageGOf = Addon.getSetting("cPageGOf")
 
+cPageserSF = Addon.getSetting("cPageserSF")
+
 cEPG = Addon.getSetting("cEPG")
 cOrdFO = "date" if Addon.getSetting("cOrdFO")=="0" else "title"
 cOrdRCF = "date" if Addon.getSetting("cOrdRCF")=="0" else "title"
@@ -60,6 +62,10 @@ ClistaGO1=["Sem filtro (Mostrar Todos)","Lançamentos","Ação","Animação","Av
 
 def setViewS():
 	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
+	xbmc.executebuiltin("Container.SetViewMode(50)")
+def setViewS2():
+	xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
+	xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL)
 	xbmc.executebuiltin("Container.SetViewMode(50)")
 def setViewM():
 	xbmcplugin.setContent(int(sys.argv[1]), 'movies')
@@ -127,6 +133,7 @@ def MSeries(): #-3
 	AddDir("[COLOR blue][B][Animes RedeCanais][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[B][COLOR cyan][Séries MMFilmes.tv][/COLOR][/B]", "config" , 190,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
+	AddDir("[B][COLOR lightgreen][Séries Superflix.net][/COLOR][/B]", "config" , 401,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
 	setViewM()
 # --------------  Fim menu
 # --------------  Inicio Filme CB
@@ -1228,6 +1235,35 @@ def PlayGO(): #211
 		xbmcgui.Dialog().ok("Cube Play", "Não foi possível carregar o vídeo")
 # ----------------- Fim Go Filmes
 # ----------------- Inicio Superflix
+def ListSerieSF(): #401:
+	pagina = "1" if not cPageserSF else cPageserSF
+	if int(pagina) > 0:
+		AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageserSF")
+	y= int(pagina)*5
+	for x in range(0, 5):
+		try:
+			y +=1
+			l = common.OpenURL("http://www.superflix.net/assistir-series-online/page/"+str(y))
+			m = re.compile('li class\=\"TPostMv\"(.+?)\<.li\>').findall(l)
+			for ll in m:
+				mm = re.compile('href\=\"([^\"]+).{1,150}src=\"([^\"]+).{1,200}itle\"\>([^\<]+).{1,150}ear\"\>([^\<]+)').findall(ll)
+				for url2,img2,name2,year2 in mm:
+					img2 = "http:"+img2 if not "http" in img2 else img2
+					name2 = name2.replace("#038;","").replace("&#8211;","-")
+					AddDir(name2+" ("+year2+")", url2, 402, img2, img2,isFolder=True,IsPlayable=False)
+		except:
+			pass
+	AddDir("[COLOR blue][B]Proxima Pagina >> ["+ str( int(pagina) + 2) +"[/B]][/COLOR]", pagina , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Next-2-2-icon.png", isFolder=False, background="cPageserSF")
+def ListTempSF(): #402
+	l = common.OpenURL(url).replace("\n","").replace("\r","")
+	m = re.compile('Temporada ?.{5,6}(\d+)(.+?)\<\/Season\>').findall(l)
+	for temp2,cont2 in m:
+		AddDir("Temporada "+ temp2 +" [COLOR lightgreen][SF][/COLOR]" ,cont2, 403, iconimage, iconimage, isFolder=True)
+def ListEpiSF(): #403
+	epis = re.compile('Num.{1,2}(\d+).+?(http:[^\"]+)').findall(url)
+	#ST(url)
+	for E,url2 in epis:
+		AddDir("Episódio "+E,url2, 405, iconimage, iconimage, isFolder=False, IsPlayable=True)
 def ListMovieSF(): #411:
 	for x in range(1, 11):
 		try:
@@ -1873,6 +1909,15 @@ elif mode == 229:
 	PlayFilmes96()
 elif mode == 350:
 	AddImdb(url)
+elif mode == 401:
+	ListSerieSF()
+	setViewS()
+elif mode == 402:
+	ListTempSF()
+	setViewS()
+elif mode == 403:
+	ListEpiSF()
+	setViewS()
 elif mode == 411:
 	ListMovieSF()
 	setViewM()
