@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.11.12"
+Versao = "19.11.12a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -800,11 +800,11 @@ def TVCB(x): #102
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
 	#ST(url)
-	link = common.OpenURL("https://canaisgratis.top/"+url)
+	link = common.OpenURL("https://canais.gratis/"+url)
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	#player = re.sub('.php', "vibgratis.php", player[0] )
-	player = re.sub('^/', "https://canaisgratis.top/" , player[0] )
+	player = re.sub('^/', "https://canais.gratis/" , player[0] )
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
@@ -1236,7 +1236,7 @@ def PlayGO(): #211
 # ----------------- Fim Go Filmes
 # ----------------- Inicio Superflix
 def ListSerieSF(): #401:
-	pagina = "1" if not cPageserSF else cPageserSF
+	pagina = "0" if not cPageserSF else cPageserSF
 	if int(pagina) > 0:
 		AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(pagina) ) +"[/B]][/COLOR]", pagina , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageserSF")
 	y= int(pagina)*5
