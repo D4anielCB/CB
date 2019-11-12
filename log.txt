@@ -114,3 +114,4 @@
 19.10.25 - superflix
 19.11.08 - superflix lancamentos
 19.11.12 - series superflix
+19.11.12a - fix canais RC
