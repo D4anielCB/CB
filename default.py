@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
 
-Versao = "19.11.12a"
+Versao = "19.11.13"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -771,6 +771,22 @@ def Busca(): # 160
 	#			AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True)
 	#except:
 	#	pass
+	AddDir("[COLOR lightgreen][B][Superflix][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+	for x in range(1, 5):
+		try:
+			l = common.OpenURL("http://www.superflix.net/page/"+str(x)+"/?s="+d)
+			m = re.compile('li class\=\"TPostMv\"(.+?)\<.li\>').findall(l)
+			for ll in m:
+				mm = re.compile('href\=\"([^\"]+).{1,150}src=\"([^\"]+).{1,200}.alt\=\"([^\"]+).{1,50}class\=\"([^\"]+)').findall(ll)
+				for url2,img2,name2,tvmovie in mm:
+					img2 = "http:"+img2 if not "http" in img2 else img2
+					name2 = name2.replace("#038;","").replace("&#8211;","-").replace("Imagem ","")
+					if "itle" in tvmovie:
+						AddDir("[COLOR lightgreen]"+name2+"[/COLOR]", url2, 405, img2, img2,isFolder=False,IsPlayable=True)
+					else:
+						AddDir("[COLOR lightgreen]"+name2+"[/COLOR]", url2, 402, img2, img2,isFolder=True,IsPlayable=False)
+		except:
+			pass
 # ----------------- FIM BUSCA
 # ----------------- TV Cubeplay
 def TVCB(x): #102
@@ -800,11 +816,11 @@ def TVCB(x): #102
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
 	#ST(url)
-	link = common.OpenURL("https://canais.gratis/"+url)
+	link = common.OpenURL("https://canaisgratis.org/"+url)
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	#player = re.sub('.php', "vibgratis.php", player[0] )
-	player = re.sub('^/', "https://canais.gratis/" , player[0] )
+	player = re.sub('^/', "https://canaisgratis.org/" , player[0] )
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
@@ -1328,7 +1344,7 @@ def RetLinkSF(x):
 		try:
 			l = common.OpenURL(x2)
 			if len(l) > 20:
-				return ["https://slave"+str(s)+".sfplayer.net/",l.replace("1080","999")]
+				return ["https://slave"+str(s)+".sfplayer.net",l.replace("1080","999")]
 		except urllib2.URLError, e:
 			pass
 def PlaySSF2(x):
