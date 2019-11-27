@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "19.11.27"
+Versao = "19.11.27a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -1318,6 +1318,7 @@ def PlaySSF(): #405
 			mp4u.append(url2)
 		d2 = xbmcgui.Dialog().select("Escolha a resolução:", mp4r)
 		if not d2 == -1:
+			NF("plus")
 			ST("http://pat-197972:8080/sf/merge2.php?l="+mp4[0]+mp4u[d2]+"&sub="+leg)
 			v = baixarsf(mp4[0]+mp4u[d2])
 			if v:
@@ -1412,7 +1413,7 @@ def PlayUrl(name, url, iconimage=None, info='', sub='', metah=''):
 			AddFavorites(b[0], iconimage, b[1], "78", "historic.txt")
 		elif "MM" in b[2]:
 			AddFavorites(b[0], iconimage, b[1], "181", "historic.txt")
-	url = re.sub('\.mp4$', '.mp4?play', url)
+	#url = re.sub('\.mp4$', '.mp4?play', url)
 	url = common.getFinalUrl(url)
 	xbmc.log('--- Playing "{0}". {1}'.format(name, url), 2)
 	#ST(url)
