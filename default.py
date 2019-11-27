@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
-import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs
+import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "19.11.13"
+Versao = "19.11.27"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -771,22 +771,6 @@ def Busca(): # 160
 	#			AddDir(name2, url2, 211, img2, img2, isFolder=False, IsPlayable=True)
 	#except:
 	#	pass
-	AddDir("[COLOR lightgreen][B][Superflix][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-	for x in range(1, 5):
-		try:
-			l = common.OpenURL("http://www.superflix.net/page/"+str(x)+"/?s="+d)
-			m = re.compile('li class\=\"TPostMv\"(.+?)\<.li\>').findall(l)
-			for ll in m:
-				mm = re.compile('href\=\"([^\"]+).{1,150}src=\"([^\"]+).{1,200}.alt\=\"([^\"]+).{1,50}class\=\"([^\"]+)').findall(ll)
-				for url2,img2,name2,tvmovie in mm:
-					img2 = "http:"+img2 if not "http" in img2 else img2
-					name2 = name2.replace("#038;","").replace("&#8211;","-").replace("Imagem ","")
-					if "itle" in tvmovie:
-						AddDir("[COLOR lightgreen]"+name2+"[/COLOR]", url2, 405, img2, img2,isFolder=False,IsPlayable=True)
-					else:
-						AddDir("[COLOR lightgreen]"+name2+"[/COLOR]", url2, 402, img2, img2,isFolder=True,IsPlayable=False)
-		except:
-			pass
 # ----------------- FIM BUSCA
 # ----------------- TV Cubeplay
 def TVCB(x): #102
@@ -816,11 +800,11 @@ def TVCB(x): #102
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
 	#ST(url)
-	link = common.OpenURL("https://canaisgratis.org/"+url)
+	link = common.OpenURL("https://canais.gratis/"+url)
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	#player = re.sub('.php', "vibgratis.php", player[0] )
-	player = re.sub('^/', "https://canaisgratis.org/" , player[0] )
+	player = re.sub('^/', "https://canais.gratis/" , player[0] )
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
@@ -1310,13 +1294,14 @@ def PlaySSF(): #405
 		if not d == -1:
 			trem2 = trem[d].replace("#038;","").replace("&amp;","&")
 			l2 = common.OpenURL(trem2)
-			m2 = re.compile("(http.+\/play\/([^\"|?]+))").findall(l2)
+			m2 = re.compile("(http.+?(\w{28,35}))").findall(l2)
 			msub = re.compile("vlsub\=([^\"|?]+)").findall(l2)
+			ST(m2)
 			if not m2:
 				PlaySSF2(l2)
 				sys.exit()
 		leg = "https://sub.sfplayer.net/subdata/"+msub[0] if msub else ""
-		mp4 = RetLinkSF(m2[0][1])
+		mp4 = RetLinkSF(m2[0][0],m2[0][1])
 		if not mp4:
 			sys.exit()
 		mp4m = re.compile("RESOLUTION\=.+x([^\s]+)\n(.+)").findall(mp4[1])
@@ -1333,20 +1318,26 @@ def PlaySSF(): #405
 			mp4u.append(url2)
 		d2 = xbmcgui.Dialog().select("Escolha a resolução:", mp4r)
 		if not d2 == -1:
-			PlayUrl(name, mp4[0]+mp4u[d2], iconimage, info, sub=leg)
+			ST("http://pat-197972:8080/sf/merge2.php?l="+mp4[0]+mp4u[d2]+"&sub="+leg)
+			v = baixarsf(mp4[0]+mp4u[d2])
+			if v:
+				PlayUrl(name, v, iconimage, info, sub=leg)
 		system.exit()
 		#PlayUrl(name, "plugin://plugin.video.gdrive?mode=streamURL&amp;url="+"https://slave2.sfplayer.net/hls/a6ebb20cd567cc52309a965ee2cd82b7.playlist.m3u8", iconimage, info, sub=leg)
 	except:
 		sys.exit()
-def RetLinkSF(x):
+def RetLinkSF(link,x):
+	plus = "plus"
 	for s in range(1, 8):
-		x2 = "https://slave"+str(s)+".sfplayer.net/hls/"+x+".playlist.m3u8"
+		x2 = "https://slave"+str(s)+plus+".sfplayer.net/hls/"+x+".playlist.m3u8"
 		try:
-			l = common.OpenURL(x2)
+			NF(s,t=500)
+			l = common.OpenURL(x2, headers={'referer': "https://www.superflix.net/"})
 			if len(l) > 20:
-				return ["https://slave"+str(s)+".sfplayer.net",l.replace("1080","999")]
+				return ["https://slave"+str(s)+plus+".sfplayer.net",l.replace("1080","999")]
 		except urllib2.URLError, e:
-			pass
+			NF("offline")
+			return ""
 def PlaySSF2(x):
 	api = re.compile("http[^\"]+api[^\"]+").findall(x)
 	if not api:
@@ -1357,6 +1348,38 @@ def PlaySSF2(x):
 	m2 = re.compile('http[^\"]+file.{1,5}\/([^\/"]+)').findall(l2)
 	url2 = "https://drive.google.com/file/d/"+m2[0]+"/edit"
 	PlayUrl(name, "plugin://plugin.video.gdrive?mode=streamURL&amp;url="+url2.encode('utf-8'), iconimage, info)
+def baixarsf(link=""):
+	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
+	py = os.path.join( Path, "vid.mp4")
+	file = open(py, "w")
+	file.write("\n")
+	if link == "":
+		return
+	m3u = common.OpenURL(link, headers={'referer': "https://www.superflix.net/"})
+	m = re.compile("http.+").findall(m3u)
+	q = 0
+	progress = xbmcgui.DialogProgress()
+	progress.create('Downloading...')
+	b = 0
+	for s in m:
+		if (progress.iscanceled()):
+			baixarsf()
+			return
+		q+=1
+		try:
+		#if q == 15:	break
+			per = int(q*100/len(m))
+			filedata = urllib2.urlopen(s).read()
+			b += len(filedata)
+			progress.update(per, convert_size( b ), "", str(per) +'%')
+			file = open(py, "ab+")
+			file.write(filedata)
+		except:
+			progress.close()
+			NF("erro")
+			return
+	progress.close()
+	return py
 # ----------------- Fim Superflix
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
@@ -1716,6 +1739,18 @@ def Update():
 		xbmc.sleep(2000)
 	except:
 		xbmcgui.Dialog().ok('Cube Play', "Ocorreu um erro, tente novamente mais tarde")
+		
+def convert_size(size_bytes):
+	if size_bytes == 0:
+		return "0B"
+	size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+	i = int(math.floor(math.log(size_bytes, 1024)))
+	p = math.pow(1024, i)
+	s = round(size_bytes / p, 2)
+	return "%s %s" % (s, size_name[i])
+		
+def NF(x, t=5000):
+	xbmc.executebuiltin("Notification({0}, {1}, {3}, {2})".format(AddonName, str(x), icon, t))
 
 def ST(x):
 	x = str(x)
