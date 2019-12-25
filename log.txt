@@ -118,3 +118,4 @@
 19.11.13 - busca SF
 19.11.27a - SF DL
 19.12.14 - Minor fixes
+19.12.25 - RC fixes
