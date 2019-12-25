@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "19.12.14"
+Versao = "19.12.25"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -482,8 +482,8 @@ def PlayMRC(): #95 Play filmes
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
-			player = re.sub('.php', "playerfree.php", player[0] )
-			player = re.sub('^/', "https://"+RC, player)
+			#player = re.sub('.php', "playerfree.php", player[0] )
+			player = re.sub('^/', "https://"+RC, player[0])
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
@@ -519,8 +519,8 @@ def PlayMRC2(): #96 Play filmes
 			#m = re.compile(reg, re.IGNORECASE).findall(pb)
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
-			player = re.sub('.php', "playerfree.php", player[0] )
-			player = re.sub('^/', "https://"+RC, player)
+			#player = re.sub('.php', "playerfree.php", player[0] )
+			player = re.sub('^/', "https://"+RC, player[0])
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
@@ -557,8 +557,8 @@ def PlaySRC(): #133 Play series
 			#m = re.compile(reg, re.IGNORECASE).findall(pb)
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
-			player = re.sub('.php', "playerfree.php", player[0] )
-			player = re.sub('^/', "https://"+RC, player)
+			#player = re.sub('.php', "playerfree.php", player[0] )
+			player = re.sub('^/', "https://"+RC, player[0])
 			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			PlayUrl(name, file[0] + "?attachment=true", iconimage, name)
@@ -828,7 +828,7 @@ def PlayTVCB(): #103
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	#player = re.sub('.php', "vibgratis.php", player[0] )
-	player = re.sub('^/', "https://canais.gratis/" , player[0] )
+	player = re.sub('^/', "https://canaisgratis.info/" , player[0] )
 	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc|Referer=https://cometa.top", iconimage, name, "")
