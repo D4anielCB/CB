@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.01.13"
+Versao = "20.01.15"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -521,7 +521,7 @@ def PlayMRC2(): #96 Play filmes
 			#file = mp4[0][1]+".mp4"
 			#player = re.sub('.php', "playerfree.php", player[0] )
 			player = re.sub('^/', "https://"+RC, player[0])
-			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
@@ -559,7 +559,7 @@ def PlaySRC(): #133 Play series
 			#file = mp4[0][1]+".mp4"
 			#player = re.sub('.php', "playerfree.php", player[0] )
 			player = re.sub('^/', "https://"+RC, player[0])
-			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			PlayUrl(name, file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, name)
 		else:
@@ -829,7 +829,7 @@ def PlayTVCB(): #103
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	#player = re.sub('.php', "vibgratis.php", player[0] )
 	player = re.sub('^/', "https://canaisgratis.info/" , player[0] )
-	link2 = common.OpenURL(player,headers={'referer': "https://cometa.top"})
+	link2 = common.OpenURL(player,headers={'referer': "https://canaisgratis.org/"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc2|Referer=https://canaisgratis.info/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
@@ -1320,7 +1320,6 @@ def PlaySSF(): #405
 			l2 = common.OpenURL(trem2)
 			m2 = re.compile("(http.+?(\w{28,35}))").findall(l2)
 			msub = re.compile("vlsub\=([^\"|?]+)").findall(l2)
-			ST(m2)
 			if not m2:
 				PlaySSF2(l2)
 				sys.exit()
@@ -1343,7 +1342,7 @@ def PlaySSF(): #405
 		d2 = xbmcgui.Dialog().select("Escolha a resolução:", mp4r)
 		if not d2 == -1:
 			NF("plus")
-			ST("http://pat-197972:8080/sf/merge2.php?l="+mp4[0]+mp4u[d2]+"&sub="+leg)
+			#ST("http://pat-197972:8080/sf/merge2.php?l="+mp4[0]+mp4u[d2]+"&sub="+leg)
 			v = baixarsf(mp4[0]+mp4u[d2])
 			if v:
 				PlayUrl(name, v, iconimage, info, sub=leg)
@@ -1352,9 +1351,10 @@ def PlaySSF(): #405
 	except:
 		sys.exit()
 def RetLinkSF(link,x):
-	plus = "plus"
+	plus = "hls"
 	for s in range(1, 8):
-		x2 = "https://slave"+str(s)+plus+".sfplayer.net/hls/"+x+".playlist.m3u8"
+		x2 = "https://lbhls.sfplayer.net/hls/"+x+"/"+x+".m3u8"
+		ST(x2)
 		try:
 			NF(s,t=500)
 			l = common.OpenURL(x2, headers={'referer': "https://www.superflix.net/"})
