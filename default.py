@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.01.29"
+Versao = "20.01.29a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -543,26 +543,27 @@ def PlaySRC(): #133 Play series
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
-			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
-			#reg = "(.+)\\$rc"+mp4[0][0]
-			#pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			#ss = re.compile('(.{1,65})RCF?Server.{1,35}\.mp4').findall(pb)
-			#try:
-			#	pb = re.sub('\$s1\/', ss[2], pb )
-			#except:
-			#	pb = re.sub('\$s1\/', ss[0], pb )
-			#try:
-			#	pb = re.sub('\$s2\/', ss[3], pb )
-			#except:
-			#	pb = re.sub('\$s2\/', ss[1], pb )
-			#m = re.compile(reg, re.IGNORECASE).findall(pb)
-			#url2 = m[0]
-			#file = mp4[0][1]+".mp4"
-			#player = re.sub('.php', "playerfree.php", player[0] )
-			player = re.sub('^/', "https://"+RC, player[0])
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-			file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			PlayUrl(name, file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, name)
+			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
+			reg = "(.+)\\$rc"+mp4[0][0]
+			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			ss = re.compile('(.{1,65})RCF?Server.{1,35}\.mp4').findall(pb)
+			try:
+				pb = re.sub('\$s1\/', ss[2], pb )
+			except:
+				pb = re.sub('\$s1\/', ss[0], pb )
+			try:
+				pb = re.sub('\$s2\/', ss[3], pb )
+			except:
+				pb = re.sub('\$s2\/', ss[1], pb )
+			m = re.compile(reg, re.IGNORECASE).findall(pb)
+			url2 = m[0]
+			file = url2 + mp4[0][1]+".mp4"
+			ST(file)
+			player = re.sub('.php', "playerfree.php", player[0] )
+			#player = re.sub('^/', "https://"+RC, player[0])
+			#mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			#file=re.compile('[^"|\']+\.mp4').findall(mp4)
+			PlayUrl(name, file + "?attachment=true|referer=https://redecanais.bz/", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
