@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.01.15"
+Versao = "20.01.29"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -125,7 +125,7 @@ def MFilmes(): #-2
 	AddDir("[COLOR blue][B][Filmes Legendado RedeCanais][/B][/COLOR]" , cPageleg, 91, "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", "https://walter.trakt.tv/images/movies/000/181/313/fanarts/thumb/cc9226edfe.jpg", background="cPageleg")
 	AddDir("[COLOR blue][B][Filmes Nacional RedeCanais][/B][/COLOR]" , cPagenac, 92, "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", "http://cdn.cinepop.com.br/2016/11/minhamaeeumapeca2_2-750x380.jpg", background="cPagenac")
 	AddDir("[COLOR purple][B][Filmes FilmesOnline.online][/B][/COLOR]" , "", 170, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
-	AddDir("[COLOR lightgreen][B][Filmes Superflix.net][/B][/COLOR]" , "", 411, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
+	#AddDir("[COLOR lightgreen][B][Filmes Superflix.net][/B][/COLOR]" , "", 411, "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp", "https://walter.trakt.tv/images/movies/000/167/163/fanarts/thumb/23ecb5f950.jpg.webp")
 	setViewM()
 def MSeries(): #-3
 	AddDir("[COLOR yellow][B][Séries NetCine.us][/B][/COLOR]" , "", 60, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
@@ -133,7 +133,7 @@ def MSeries(): #-3
 	AddDir("[COLOR blue][B][Animes RedeCanais][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[B][COLOR cyan][Séries MMFilmes.tv][/COLOR][/B]", "config" , 190,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
-	AddDir("[B][COLOR lightgreen][Séries Superflix.net][/COLOR][/B]", "config" , 401,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
+	#AddDir("[B][COLOR lightgreen][Séries Superflix.net][/COLOR][/B]", "config" , 401,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
 	setViewM()
 # --------------  Fim menu
 # --------------  Inicio Filme CB
@@ -257,6 +257,7 @@ def PlayS(): #62
 			i+=1
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
+			listal[d] = re.sub('https', 'http', listal[d])
 			PlayUrl(name, listal[d]+"|Referer=http://.netcine.us&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
 	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
@@ -333,6 +334,7 @@ def PlayMNC(): #79
 		if d!= -1:
 			global background
 			background=background+";;;"+name+";;;NC"
+			listal[d] = re.sub('https', 'http', listal[d])
 			PlayUrl(name, listal[d]+"|Referer=http://.netcine.us&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
 		else:
 			sys.exit()
@@ -500,7 +502,7 @@ def PlayMRC(): #95 Play filmes
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
-def PlayMRC2(): #96 Play filmes
+def PlayMRC2(): #96 Play filmes direto
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
 	url2 = re.sub('^/', "https://"+RC, url2 )
 	try:
@@ -510,22 +512,21 @@ def PlayMRC2(): #96 Play filmes
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
-			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
-			#reg = "(.+)\\$rc"+mp4[0][0]
-			#pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			#ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
-			#pb = re.sub('\$s1\/', ss[0], pb )
-			#pb = re.sub('\$s2\/', ss[1], pb )
-			#m = re.compile(reg, re.IGNORECASE).findall(pb)
-			#url2 = m[0]
-			#file = mp4[0][1]+".mp4"
-			#player = re.sub('.php', "playerfree.php", player[0] )
-			player = re.sub('^/', "https://"+RC, player[0])
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-			file=re.compile('[^"|\']+\.mp4').findall(mp4)
+			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
+			reg = "(.+)\\$rc"+mp4[0][0]
+			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
+			pb = re.sub('\$s1\/', ss[0], pb )
+			pb = re.sub('\$s2\/', ss[1], pb )
+			m = re.compile(reg, re.IGNORECASE).findall(pb)
+			url2 = m[0]
+			file = url2 + mp4[0][1]+".mp4"
+			#player = re.sub('^/', "https://"+RC, player[0])
+			#mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			#file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file + "?attachment=true|referer=https://redecanais.bz/", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
