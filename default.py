@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.01.29a"
+Versao = "20.01.31"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -512,21 +512,22 @@ def PlayMRC2(): #96 Play filmes direto
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
-			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
-			reg = "(.+)\\$rc"+mp4[0][0]
-			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
-			pb = re.sub('\$s1\/', ss[0], pb )
-			pb = re.sub('\$s2\/', ss[1], pb )
-			m = re.compile(reg, re.IGNORECASE).findall(pb)
-			url2 = m[0]
-			file = url2 + mp4[0][1]+".mp4"
-			#player = re.sub('^/', "https://"+RC, player[0])
-			#mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-			#file=re.compile('[^"|\']+\.mp4').findall(mp4)
+			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
+			#reg = "(.+)\\$rc"+mp4[0][0]
+			#pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
+			#ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
+			#pb = re.sub('\$s1\/', ss[0], pb )
+			#pb = re.sub('\$s2\/', ss[1], pb )
+			#m = re.compile(reg, re.IGNORECASE).findall(pb)
+			#url2 = m[0]
+			#file = url2 + mp4[0][1]+".mp4"
+			player = re.sub('^/', "https://"+RC, player[0])
+			player = re.sub('\.php', "-bk.php", player)
+			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
+			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file + "?attachment=true|referer=https://redecanais.bz/", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -543,7 +544,7 @@ def PlaySRC(): #133 Play series
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		if player:
-			mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
+			""" mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
 			pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
 			ss = re.compile('(.{1,65})RCF?Server.{1,35}\.mp4').findall(pb)
@@ -558,12 +559,12 @@ def PlaySRC(): #133 Play series
 			m = re.compile(reg, re.IGNORECASE).findall(pb)
 			url2 = m[0]
 			file = url2 + mp4[0][1]+".mp4"
-			ST(file)
-			player = re.sub('.php', "playerfree.php", player[0] )
-			#player = re.sub('^/', "https://"+RC, player[0])
-			#mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-			#file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			PlayUrl(name, file + "?attachment=true|referer=https://redecanais.bz/", iconimage, name)
+			player = re.sub('.php', "playerfree.php", player[0] ) """
+			player = re.sub('^/', "https://"+RC, player[0])
+			player = re.sub('\.php', "-bk.php", player)
+			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
+			file=re.compile('[^"|\']+\.mp4').findall(mp4)
+			PlayUrl(name, file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -808,7 +809,6 @@ def TVCB(x): #102
 	#ST(m)
 	for url2,img2,name2 in m:
 		AddDir(name2 , url2, 103, img2, img2, isFolder=False, IsPlayable=True)
-	
 	#try:
 	#AddDir("Play", m[0], 50, "", "", isFolder=False, IsPlayable=True, info="")
 	#	link = common.OpenURL(x)
@@ -825,13 +825,15 @@ def TVCB(x): #102
 	#except:
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
-	#ST(url)
+	#link = common.OpenURL("https://redecanais.bz/player3/serverf4-bk.php?vid=JRSCWRLDRNOAMCDO", headers={'referer': "https://homeingles.com/"})
+	#ST(link)
+	#return
 	link = common.OpenURL("https://canais.gratis/"+url)
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
-	#player = re.sub('.php', "vibgratis.php", player[0] )
 	player = re.sub('^/', "https://canaisgratis.info/" , player[0] )
-	link2 = common.OpenURL(player,headers={'referer': "https://canaisgratis.org/"})
+	player = re.sub('.php', "-bk.php", player )
+	link2 = common.OpenURL(player,headers={'referer': "https://homeingles.com/"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
 	PlayUrl(name, m[0] + "?crc2|Referer=https://canaisgratis.info/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
