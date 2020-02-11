@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.01.31"
+Versao = "20.02.11"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -497,7 +497,7 @@ def PlayMRC(): #95 Play filmes
 			#m = re.compile(reg, re.IGNORECASE).findall(pb)
 			#url2 = m[0]
 			#file = mp4[0][1]+".mp4"
-			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true|referer=https://redecanais.bz/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
+			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -527,7 +527,7 @@ def PlayMRC2(): #96 Play filmes direto
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -564,7 +564,7 @@ def PlaySRC(): #133 Play series
 			player = re.sub('\.php', "-bk.php", player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			PlayUrl(name, file[0] + "?attachment=true|referer=https://redecanais.bz/", iconimage, name)
+			PlayUrl(name, file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -835,7 +835,7 @@ def PlayTVCB(): #103
 	player = re.sub('.php', "-bk.php", player )
 	link2 = common.OpenURL(player,headers={'referer': "https://homeingles.com/"})
 	m = re.compile('http.{10,250}?m3u8').findall(link2)
-	PlayUrl(name, m[0] + "?crc2|Referer=https://canaisgratis.info/", iconimage, name, "")
+	PlayUrl(name, m[0] + "?crc2|Referer=https://l.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	#ST(m[0])
 	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
@@ -898,7 +898,7 @@ def PlayTVRC(): # 101
 		#ST(urlp[0])
 		if urlp:
 			#ST(urlp[0])
-			PlayUrl(name, urlp[0] + "|Referer=http://cometa.top/player3/canaisvibfree.php?canal=", iconimage, info)
+			PlayUrl(name, urlp[0] + "|Referer=", iconimage, info)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', "Erro, aguarde atualização")
 	except:
