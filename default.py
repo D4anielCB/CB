@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.02.11"
+Versao = "20.02.13"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -524,10 +524,13 @@ def PlayMRC2(): #96 Play filmes direto
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "-bk.php", player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
-			file=re.compile('[^"|\']+\.mp4').findall(mp4)
+			#ST(mp4)
+			file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
+			#ST(file)
 			global background
 			background=url+";;;"+name+";;;RC"
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, desc) #aqui
+			file[0] = re.sub('https', 'http', file[0])
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "|Referer=https://cdn2.canais.ink/&Connection=Keep-Alive&Accept-Language=pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7,gd;q=0.6&User-Agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -563,8 +566,9 @@ def PlaySRC(): #133 Play series
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "-bk.php", player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
-			file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			PlayUrl(name, file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name)
+			file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
+			file[0] = re.sub('https', 'http', file[0])
+			PlayUrl(name, file[0] + "|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -834,8 +838,8 @@ def PlayTVCB(): #103
 	player = re.sub('^/', "https://canaisgratis.info/" , player[0] )
 	player = re.sub('.php', "-bk.php", player )
 	link2 = common.OpenURL(player,headers={'referer': "https://homeingles.com/"})
-	m = re.compile('http.{10,250}?m3u8').findall(link2)
-	PlayUrl(name, m[0] + "?crc2|Referer=https://l.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name, "")
+	m = re.compile('http.{10,250}?m3u8[^"]+').findall(link2)
+	PlayUrl(name, m[0] + "|Referer=https://l.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	#ST(m[0])
 	#AddDir("play", m[0] + "?play|Referer=https://cometa.top", 3, isFolder=False, IsPlayable=True, info="")
