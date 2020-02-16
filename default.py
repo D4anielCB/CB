@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.02.13"
+Versao = "20.02.15"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -522,8 +522,8 @@ def PlayMRC2(): #96 Play filmes direto
 			#url2 = m[0]
 			#file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('^/', "https://"+RC, player[0])
-			player = re.sub('\.php', "-bk.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
+			#player = re.sub('\.php', "-bk.php", player)
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			#ST(mp4)
 			file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
 			#ST(file)
@@ -564,8 +564,8 @@ def PlaySRC(): #133 Play series
 			file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
-			player = re.sub('\.php', "-bk.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://homeingles.com/"})
+			#player = re.sub('\.php', "-bk.php", player)
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
 			file[0] = re.sub('https', 'http', file[0])
 			PlayUrl(name, file[0] + "|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name)
@@ -836,8 +836,8 @@ def PlayTVCB(): #103
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	player = re.sub('^/', "https://canaisgratis.info/" , player[0] )
-	player = re.sub('.php', "-bk.php", player )
-	link2 = common.OpenURL(player,headers={'referer': "https://homeingles.com/"})
+	#player = re.sub('.php', "-bk.php", player )
+	link2 = common.OpenURL(player,headers={'referer': "https://canaisgratis.info/"})
 	m = re.compile('http.{10,250}?m3u8[^"]+').findall(link2)
 	PlayUrl(name, m[0] + "|Referer=https://l.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
