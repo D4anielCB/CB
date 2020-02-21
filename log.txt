@@ -128,3 +128,4 @@
 20.02.11 - referer RC
 20.02.13 - referer RC e token
 20.02.15 - fix RC iframe
+20.02.21 - fix RC tv
