@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.02.21"
+Versao = "20.03.03"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -522,11 +522,12 @@ def PlayMRC2(): #96 Play filmes direto
 			#url2 = m[0]
 			#file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('^/', "https://"+RC, player[0])
-			#player = re.sub('\.php', "-bk.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-			#ST(mp4)
+			#player = re.sub('\.php', "-bk3.php", player)
+			auth = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
+			player = re.sub('\.php', "hlb.php", player)
+			mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
-			#ST(file)
 			global background
 			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('https', 'http', file[0])
@@ -564,9 +565,14 @@ def PlaySRC(): #133 Play series
 			file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
-			#player = re.sub('\.php', "-bk.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			#player = re.sub('\.php', "-bk3.php", player)
+			auth = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
+			player = re.sub('\.php', "hlb.php", player)
+			mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
+			global background
+			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('https', 'http', file[0])
 			PlayUrl(name, file[0] + "|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name)
 		else:
@@ -832,13 +838,30 @@ def PlayTVCB(): #103
 	#link = common.OpenURL("https://redecanais.bz/player3/serverf4-bk.php?vid=JRSCWRLDRNOAMCDO", headers={'referer': "https://homeingles.com/"})
 	#ST(link)
 	#return
-	link = common.OpenURL("https://canais.gratis/"+url)
+	link = common.OpenURL("https://canaisgratis.eu/"+url)
 	#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
-	player = re.sub('^/', "https://canaisgratis.info/" , player[0] )
-	#player = re.sub('.php', "-bk.php", player )
-	link2 = common.OpenURL(player,headers={'referer': "https://canaisgratis.info/"})
+	player = re.sub('^/', "https://canaisgratis.eu/" , player[0] )
+	player = re.sub('.php', "hlb.php", player )
+	auth = common.OpenURL(player,headers={'referer': "https://canaisgratis.eu/"})
+	ST(auth)
+	exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
+	return
+	player = re.sub('^/', "https://"+RC, player[0])
+	#player = re.sub('\.php', "-bk3.php", player)
+	auth = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+	exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
+	player = re.sub('\.php', "hlb.php", player)
+	mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
+	file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
+	global background
+	background=url+";;;"+name+";;;RC"
+	file[0] = re.sub('https', 'http', file[0])
+	
+	
+	
 	m = re.compile('http.{10,250}?m3u8[^"|\n]+').findall(link2)
+	m[0] = re.sub('https', 'http', m[0] )
 	PlayUrl(name, m[0] + "|Referer=https://l.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	#ST(m[0])
