@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.03.03"
+Versao = "20.03.04"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -843,24 +843,11 @@ def PlayTVCB(): #103
 	player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 	player = re.sub('^/', "https://canaisgratis.eu/" , player[0] )
 	player = re.sub('.php', "hlb.php", player )
-	auth = common.OpenURL(player,headers={'referer': "https://canaisgratis.eu/"})
-	ST(auth)
-	exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
-	return
-	player = re.sub('^/', "https://"+RC, player[0])
-	#player = re.sub('\.php', "-bk3.php", player)
-	auth = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-	exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
-	player = re.sub('\.php', "hlb.php", player)
-	mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
-	file=re.compile('[^"|\']+\.mp4[^\n]+').findall(mp4)
-	global background
-	background=url+";;;"+name+";;;RC"
-	file[0] = re.sub('https', 'http', file[0])
-	
-	
-	
-	m = re.compile('http.{10,250}?m3u8[^"|\n]+').findall(link2)
+	if "canal" in url:
+		c = re.compile('canal\=(.+)').findall(url)
+		player = re.sub('canal=bbb', "canal="+c[0], player )
+	m3u = common.OpenURL(player,headers={'referer': "https://canaisgratis.eu/"})
+	m = re.compile('http.{10,250}?m3u8[^"|\n]+').findall(m3u)
 	m[0] = re.sub('https', 'http', m[0] )
 	PlayUrl(name, m[0] + "|Referer=https://l.llllllllllllllllllllllllllllllllllllllll.fun/", iconimage, name, "")
 	link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
