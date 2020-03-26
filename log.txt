@@ -131,3 +131,4 @@
 20.02.21 - fix RC tv
 20.03.03 - fix RC 
 20.03.04 - fix Canais
+20.03.26 - fix redecanais
