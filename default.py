@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.03.26"
+Versao = "20.03.27"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -510,7 +510,7 @@ def PlayMRC2(): #96 Play filmes direto
 		desc = re.compile('itemprop=\"?description\"?>\s.{0,10}?<p>(.+)<\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
-		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
+		player = re.compile('<iframe.{1,50}src=\"(\/?p[^\"]+)\"').findall(link)
 		if player:
 			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			#reg = "(.+)\\$rc"+mp4[0][0]
@@ -549,7 +549,7 @@ def PlaySRC(): #133 Play series
 		desc = re.compile('itemprop=\"?description\"?>\s<p>(.+)<\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
-		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
+		player = re.compile('<iframe.{1,50}src=\"(\/?p[^\"]+)\"').findall(link)
 		if player:
 			""" mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
 			reg = "(.+)\\$rc"+mp4[0][0]
