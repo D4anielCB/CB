@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.03.27"
+Versao = "20.03.27a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -528,7 +528,8 @@ def PlayMRC2(): #96 Play filmes direto
 			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			#exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
 			#player = re.sub('\.php', "hlb.php", player)
-			file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
+			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
+			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			#return
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
 			global background
@@ -570,7 +571,8 @@ def PlaySRC(): #133 Play series
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
-			file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
+			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
+			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			#ST(file)
 			#return
 			global background
