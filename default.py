@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.03.27a"
+Versao = "20.04.01"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -814,8 +814,23 @@ def Busca(): # 160
 	#	pass
 # ----------------- FIM BUSCA
 # ----------------- TV Cubeplay
+def PVR(): #109
+	try:
+		l = common.OpenURL("https://pastebin.com/raw/icwdED6L")
+		Path = re.sub('Addons', 'userdata', addonDir, flags=re.IGNORECASE)
+		Path = re.sub('plugin.video.CubePlay', '', Path, flags=re.IGNORECASE)
+		Path = os.path.join( Path, "addon_data")
+		Path = os.path.join( Path, "pvr.iptvsimple")
+		Path = os.path.join( Path, "settings.xml")
+		file = open(Path, "w")
+		file.write(l)
+		NF("Configurado, Reinicie o Kodi")
+	except:
+		NF("Instale o addon PVR Simple Client")
+		pass
 def TVCB(x): #102
 	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
+	AddDir("Configurar PVR Simple Client", "", 109, "", "", isFolder=False, IsPlayable=False, info="")
 	link = common.OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","")
 	if cadulto!="8080":
 		link = re.sub('Adulto.+', "", link)
@@ -1934,6 +1949,8 @@ elif mode == 103:
 elif mode == 105:
 	Addon.setSetting("cEPG", "1")
 	xbmc.executebuiltin("XBMC.Container.Refresh()")
+elif mode == 109:
+	PVR()
 elif mode == 110:
 	ToggleNext(url, background)
 elif mode == 120:
