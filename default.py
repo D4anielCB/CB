@@ -824,7 +824,7 @@ def PVR(): #109
 		Path = os.path.join( Path, "settings.xml")
 		file = open(Path, "w")
 		file.write(l)
-		NF("Configurado, Reinicie o Kodi")
+		NF("Configurado. Reinicie o Kodi")
 	except:
 		NF("Instale o addon PVR Simple Client")
 		pass
