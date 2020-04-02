@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.01"
+Versao = "20.04.02"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -380,7 +380,7 @@ def MoviesRCD(): #90 Filme dublado
 					img2 = re.sub('^/', "https://"+RC, img2 )
 					if cPlayD == "true" and "imdb" in cadulto:
 						if not url2 in exurl:
-							AddDir(name2 ,url2, 350, img2, img2, info="", isFolder=False, IsPlayable=False)
+							AddDir("[COLOR blue]"+name2+"[/COLOR]" ,url2, 350, img2, img2, info="", isFolder=False, IsPlayable=False)
 					elif cPlayD == "true":
 						AddDir(name2 ,url2, 96, img2, img2, info="", isFolder=False, IsPlayable=True)
 					else:
@@ -476,27 +476,19 @@ def MoviesRCR(): # Lancamentos
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayMRC(): #95 Play filmes
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http","https") )
-	url2 = re.sub('^/', "https://"+RC, url2 )
+	if not "redecanais" in url2:
+		url2 = "https://"+RC+ url2
 	try:
 		link = common.OpenURL(proxy+url2.replace("http\:","https\:"))
 		desc = re.compile('itemprop=\"?description\"?>\s.{0,10}?<p>(.+)<\/p>').findall(link)
 		if desc:
 			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
-		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
+		player = re.compile('<iframe.{1,50}src=\"(\/?p[^\"]+)\"').findall(link)
 		if player:
-			#player = re.sub('.php', "playerfree.php", player[0] )
 			player = re.sub('^/', "https://"+RC, player[0])
-			mp4 = common.OpenURL(player ,headers={'referer': "https://cometa.top/"})
+			player = re.sub('\.php', "hlb.php", player)
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
-			#reg = "(.+)\\$rc"+mp4[0][0]
-			#pb = common.OpenURL("https://pastebin.com/raw/FwSnnr65")
-			#ss = re.compile('(.{1,65})RCFServer.{1,35}\.mp4').findall(pb)
-			#pb = re.sub('\$s1\/', ss[0], pb )
-			#pb = re.sub('\$s2\/', ss[1], pb )
-			#m = re.compile(reg, re.IGNORECASE).findall(pb)
-			#url2 = m[0]
-			#file = mp4[0][1]+".mp4"
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
@@ -504,7 +496,8 @@ def PlayMRC(): #95 Play filmes
 		AddDir("Server error, tente novamente em alguns minutos" , "", 0, "", "")
 def PlayMRC2(): #96 Play filmes direto
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
-	url2 = re.sub('^/', "https://"+RC, url2 )
+	if not "redecanais" in url2:
+		url2 = "https://"+RC+ url2
 	try:
 		link = common.OpenURL(proxy+url2.replace("http\:","https\:"))
 		desc = re.compile('itemprop=\"?description\"?>\s.{0,10}?<p>(.+)<\/p>').findall(link)
@@ -830,6 +823,7 @@ def PVR(): #109
 		pass
 def TVCB(x): #102
 	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
+	AddDir("Test", "", 101, "", "", isFolder=False, IsPlayable=False, info="")
 	AddDir("Configurar PVR Simple Client", "", 109, "", "", isFolder=False, IsPlayable=False, info="")
 	link = common.OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","")
 	if cadulto!="8080":
@@ -887,28 +881,6 @@ def PlayTVCB(): #103
 def Acento(x):
 	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
 	return x
-def EPG():
-	epg1 = "{"
-	try:
-		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Carregando lista EPG. Aguarde um momento!", icon))
-		link = common.OpenURL("http://www.epg.com.br/~mysql41/vertv.php").replace('	','')
-		m = re.compile('javascript:toggleCanal\(\d+,.([^\']+)\h*(?s)(.+?)\<\!-- orig').findall(link)
-		for c,f in m:
-			hora = ""
-			m2 = re.compile('(.+)(\(\d+.\d+\))\s').findall(f)
-			if m2:
-				for prog1,prog2 in m2:
-					hora += prog2 +" "+ prog1 + ";;;"
-					try:
-						hora= Acento(hora)
-					except:
-						hora = hora
-			hora = hora.replace("'","")
-			epg1 += "'"+c+"' : '"+hora+"' , "
-		return epg1+"'none':''}"
-	except urllib2.URLError, e:
-		return ""
-		xbmc.executebuiltin("Notification({0}, {1}, 7000, {2})".format(AddonName, "Erro. tente novamente!", icon))
 def TVRC(): #100
 	c = ["Categoria","Alfabético"]
 	d = xbmcgui.Dialog().select("Qual a ordem dos canais?", c)
@@ -918,7 +890,9 @@ def TVRC(): #100
 	for img2,name2,url2,a,c in match:
 		AddDir(name2, url2, 3, img2, img2, isFolder=False, IsPlayable=True, info="")
 def PlayTVRC(): # 101
-	#url2 = re.sub('redecanais\.[^\/]+', "redecanais.xyz", url.replace("https","http") )
+	url = common.OpenURL("https://multicanais.com/player.php?canal=cartoonnetworksd")
+	ST(url)
+	return
 	try:
 		link = common.OpenURL(url)
 		#player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
