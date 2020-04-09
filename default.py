@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.02"
+Versao = "20.04.09"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -519,16 +519,18 @@ def PlayMRC2(): #96 Play filmes direto
 			#player = "https://redecanais.bz//player3/serverf4hlb.php?vid=TGO"
 			#return
 			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			#ST(mp4)
 			#exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
 			#player = re.sub('\.php', "hlb.php", player)
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4').findall(mp4)
+			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			#return
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('https', 'http', file[0])
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] + "|Referer="+player, iconimage, desc) #aqui
+			file[1] = re.sub('\n', '', file[1])
+			file[1] = re.sub('https', 'http', file[1])
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[1] , iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -565,13 +567,12 @@ def PlaySRC(): #133 Play series
 			player = re.sub('\.php', "hlb.php", player)
 			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4').findall(mp4)
-			#ST(file)
-			#return
+			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('https', 'http', file[0])
-			PlayUrl(name, file[0] + "|referer="+player, iconimage, name)
+			file[1] = re.sub('\n', '', file[1])
+			file[1] = re.sub('https', 'http', file[1])
+			PlayUrl(name, file[1] + "|referer="+player, iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -710,6 +711,20 @@ def Busca(): # 160
 	if not d:
 		return Categories()
 		sys.exit(int(sys.argv[1]))
+	'''try:
+		p= 1
+		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
+		l= 0
+		for x in range(0, 1):
+			link = common.OpenURL("https://www.google.com/search?q=sonic+site:redecanais.bz&hl=pt-BR&&start="+str(l))
+			#l +=10
+			match = re.compile('data\-echo\=\"([^\"]+).{10,150}href=\"([^\"]+).{0,10}title=\"([^\"]+)\"').findall(link.replace('\n','').replace('\r',''))
+			ST(link)
+			if match:
+				pass
+	except:
+		pass
+	return '''
 	try:
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
@@ -734,7 +749,7 @@ def Busca(): # 160
 				break
 	except:
 		pass
-	progress.update(25, "25%", "Netcine", "")
+	progress.update(33, "33%", "Netcine", "")
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		link2 = common.OpenURL("http://netcine.me/?s="+d).replace('\n','').replace('\r','')
@@ -749,7 +764,7 @@ def Busca(): # 160
 					AddDir("[COLOR yellow]" +name2+ "[/COLOR]",url2, 78, img2, img2, isFolder=True)
 	except:
 		pass
-	progress.update(50, "50%", "MMfilmes", "")
+	progress.update(66, "66%", "MMfilmes", "")
 	l=0
 	i=0
 	try:
@@ -774,7 +789,7 @@ def Busca(): # 160
 			i=0
 	except:
 		pass
-	progress.update(75, "75%", " SuperFlix", "")
+	''' progress.update(75, "75%", " SuperFlix", "")
 	AddDir("[COLOR lightgreen][B][Superflix][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 	for x in range(1, 5):
 		try:
@@ -790,7 +805,7 @@ def Busca(): # 160
 					else:
 						AddDir("[COLOR lightgreen]"+name2+"[/COLOR]", url2, 402, img2, img2,isFolder=True,IsPlayable=False)
 		except:
-			pass
+			pass '''
 	progress.update(100, "100", "", "")
 	progress.close()
 	#l=0
@@ -823,7 +838,7 @@ def PVR(): #109
 		pass
 def TVCB(x): #102
 	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
-	AddDir("Test", "", 101, "", "", isFolder=False, IsPlayable=False, info="")
+	#AddDir("Test", "", 101, "", "", isFolder=False, IsPlayable=True, info="")
 	AddDir("Configurar PVR Simple Client", "", 109, "", "", isFolder=False, IsPlayable=False, info="")
 	link = common.OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","")
 	if cadulto!="8080":
@@ -862,8 +877,9 @@ def PlayTVCB(): #103
 			player = re.sub('canal=bbb', "canal="+c[0], player )
 		#player = re.sub('\.php', "hlb.php", player)
 		m3u = common.OpenURL(player,headers={'referer': "https://canaisgratis.eu/"})
-		m = re.compile('http.{10,250}?m3u8[^"|\n]?').findall(m3u)
+		m = re.compile('http.{10,250}?m3u8[^"|\n|\']{0,100}').findall(m3u)
 		m[0] = re.sub('https', 'http', m[0] )
+		m[0] = re.sub( '\'|"', '', m[0] )
 		PlayUrl(name, m[0] + "|Referer="+player, iconimage, name, "")
 		link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	except:
@@ -889,10 +905,11 @@ def TVRC(): #100
 	match = re.compile('tvg\-logo\=\"([^\"]+).+,(.+)\s(.+)|,(.+)\s(.+)').findall(link)
 	for img2,name2,url2,a,c in match:
 		AddDir(name2, url2, 3, img2, img2, isFolder=False, IsPlayable=True, info="")
-def PlayTVRC(): # 101
+def PlayTVRC(): #101
+	PlayUrl(name, "https://live.multicanais.com/live/nathd/video.m3u8?md5=p3MW8JKKz4EmQZZ_HJ090Q&expires=1586188772|Referer=https://multicanais.com/player.php?canal=globominas", iconimage, info)
+	return
 	url = common.OpenURL("https://multicanais.com/player.php?canal=cartoonnetworksd")
 	ST(url)
-	return
 	try:
 		link = common.OpenURL(url)
 		#player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
