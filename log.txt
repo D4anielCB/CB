@@ -135,3 +135,4 @@
 20.03.27a - fix redecanais
 20.04.01 - PVR
 20.04.02 - fix RC dublado (karina)
+20.04.09 - fix RC
