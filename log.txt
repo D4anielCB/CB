@@ -136,3 +136,4 @@
 20.04.01 - PVR
 20.04.02 - fix RC dublado (karina)
 20.04.09 - fix RC
+20.04.12 - fix chunk
