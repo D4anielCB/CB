@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.09"
+Versao = "20.04.12"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -528,9 +528,9 @@ def PlayMRC2(): #96 Play filmes direto
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[1] = re.sub('\n', '', file[1])
-			file[1] = re.sub('https', 'http', file[1])
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[1] , iconimage, desc) #aqui
+			file[0] = re.sub('\n', '', file[0])
+			file[0] = re.sub('https', 'http', file[0])
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] , iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -570,9 +570,9 @@ def PlaySRC(): #133 Play series
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[1] = re.sub('\n', '', file[1])
-			file[1] = re.sub('https', 'http', file[1])
-			PlayUrl(name, file[1] + "|referer="+player, iconimage, name)
+			file[0] = re.sub('\n', '', file[0])
+			file[0] = re.sub('https', 'http', file[0])
+			PlayUrl(name, file[0] + "|referer="+player, iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -1586,7 +1586,7 @@ def AddImdb(url): #350
 	if s == -1:
 		nomes=[]
 		d = xbmcgui.Dialog().input("TheMovie id")
-		if re.compile("\w").findall(d):
+		if re.compile("[a-zA-Z]").findall(d):
 			jq = Imdbreturn(d)
 			if jq['total_results']==0:
 				xbmc.executebuiltin("Notification({0}, {1}, 5000, {2})".format(AddonName, "Nada encontrado".encode("utf-8"), icon))
