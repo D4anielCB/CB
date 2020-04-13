@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.12"
+Versao = "20.04.13"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -580,7 +580,8 @@ def PlaySRC(): #133 Play series
 		sys.exit()
 def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
-	url2 = re.sub('^/', "https://"+RC, url2 )
+	if not "redecanais" in url2:
+		url2 = "https://"+RC+ url2
 	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("http\:","https\:")
 	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
 	i= 0
@@ -605,7 +606,6 @@ def TemporadasRC(x): #135 Episodios
 			else:
 				name3=name2
 			urlm = re.compile('href\=\"(.+?)\"(.+?(Dub|Leg))?').findall(url2)
-			#ST(urlm)
 			url2 = re.sub('(\w)-(\w)', r'\1 \2', url2)
 			try:
 				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
@@ -701,30 +701,33 @@ def AllEpisodiosRC(): #139 Mostrar todos Epi
 			elif urlm:
 				AddDir("S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 # ----------------- FIM REDECANAIS SERIES,ANIMES,DESENHOS
-# ----------------- BUSCA
-def Busca(): # 160
+# ----------------- #BUSCA
+def Busca(): #160
 	AddDir("[COLOR pink][B][Nova Busca][/B][/COLOR]", "" , 50 ,"", isFolder=False)
 	d = xbmcgui.Dialog().input("Busca (poder demorar a carregar os resultados)").replace(" ", "+")
+	d = urllib.quote_plus(d)
 	progress = xbmcgui.DialogProgress()
 	progress.create('Buscando...')
 	progress.update(0, "0%", "Redecanais", "")
 	if not d:
 		return Categories()
 		sys.exit(int(sys.argv[1]))
-	'''try:
+	try:
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
-		for x in range(0, 1):
-			link = common.OpenURL("https://www.google.com/search?q=sonic+site:redecanais.bz&hl=pt-BR&&start="+str(l))
-			#l +=10
-			match = re.compile('data\-echo\=\"([^\"]+).{10,150}href=\"([^\"]+).{0,10}title=\"([^\"]+)\"').findall(link.replace('\n','').replace('\r',''))
-			ST(link)
+		for x in range(0, 5):
+			link = common.OpenURL("https://www.google.com/search?q="+d+"+site:redecanais.bz&hl=pt-BR&&start="+str(l))
+			l +=10
+			match = re.compile('href\=\"(https?\:.{0,50}redecanais[^\"]+)\".{50,200}\>([^\<]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
-				pass
+				for url2,name2 in match:
+					if "lista" in url2 or "Lista" in name2:
+						AddDir("[COLOR blue]" +name2+ "[/COLOR]" ,url2, 135, " ", " ", info="", isFolder=True, IsPlayable=False)
+					else:
+						AddDir("[COLOR blue]" +name2+ "[/COLOR]" ,url2, 96, " ", " ", info="", isFolder=False, IsPlayable=True)
 	except:
 		pass
-	return '''
 	try:
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
@@ -1551,7 +1554,7 @@ def GetSourceLocation(title, chList):
 	return answer
 def Imdbreturn(n):
 	n = urllib.quote(n)
-	urlq = common.OpenURL("https://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+n+"&language=pt-BR")
+	urlq = common.OpenURL("http://api.themoviedb.org/3/search/movie?api_key=bd6af17904b638d482df1a924f1eabb4&query="+n+"&language=pt-BR")
 	jq = json.loads(urlq)
 	return jq
 
@@ -1605,9 +1608,9 @@ def AddImdb(url): #350
 			#d = "503314"
 			if not d:
 				return
-			url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
+			url2 = common.OpenURL("http://api.themoviedb.org/3/movie/"+d+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=pt-BR")
 			j = json.loads(url2)
-			url3 = common.OpenURL("https://api.themoviedb.org/3/movie/"+str(j['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
+			url3 = common.OpenURL("http://api.themoviedb.org/3/movie/"+str(j['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
 			j3 = json.loads(url3)
 			Nome=j['title']
 			Id=d
@@ -1624,7 +1627,7 @@ def AddImdb(url): #350
 		Ano = jq['results'][s]['release_date']
 		Vote = jq['results'][s]['vote_average']
 		if jq['results'][s]['original_language'] != 'en':
-			url2 = common.OpenURL("https://api.themoviedb.org/3/movie/"+str(jq['results'][s]['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
+			url2 = common.OpenURL("http://api.themoviedb.org/3/movie/"+str(jq['results'][s]['id'])+"?api_key=bd6af17904b638d482df1a924f1eabb4&language=en-US")
 			j2 = json.loads(url2)
 			Name=j2['title']
 	Ano = re.sub('\-.+', '', Ano )
