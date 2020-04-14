@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.13"
+Versao = "20.04.14"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -31,6 +31,8 @@ cPagedes = Addon.getSetting("cPagedes")
 cPagefo1 = Addon.getSetting("cPagefo1")
 cPageMMf = Addon.getSetting("cPageMMf")
 cPageGOf = Addon.getSetting("cPageGOf")
+
+cPageFNC = Addon.getSetting("cPageFNC") #paginacao Filmes Netcine
 
 cPageserSF = Addon.getSetting("cPageserSF")
 
@@ -89,7 +91,7 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.bz/"
+RC="redecanais.se/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -267,22 +269,33 @@ def MoviesNC(): #71
 	AddDir("[COLOR yellow][B][Genero dos Filmes]:[/B] " + Clista3[int(Cat)] +"[/COLOR]", "url" ,80 ,"https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", "https://lh5.ggpht.com/gv992ET6R_InCoMXXwIbdRLJczqOHFfLxIeY-bN2nFq0r8MDe-y-cF2aWq6Qy9P_K-4=w300", isFolder=False)
 	CategoryOrdem("cOrdNCF")
 	try:
-		if Cat=="0":
-			link = common.OpenURL("http://netcine.me/page/1/?mt").replace('\n','').replace('\r','')
-			l1 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/2/?mt").replace('\n','').replace('\r','')
-			l2 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/3/?mt").replace('\n','').replace('\r','')
-			l3 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/4/?mt").replace('\n','').replace('\r','')
-			l4 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/5/?mt").replace('\n','').replace('\r','')
-			l5 = re.compile("box_movies(.+)").findall(link)
-			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0]+l5[0])
+		if int(cPageFNC) > 0:
+			AddDir("[COLOR blue][B]<< Pagina Anterior ["+ str( int(cPageFNC) ) +"[/B]][/COLOR]", cPageFNC , 120 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageFNC")
 		else:
-			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)]).replace('\n','').replace('\r','')
+			AddDir("[COLOR blue][B]Proxima Pagina >>  ["+ str( int(cPageFNC) + 2 ) +"[/B]][/COLOR]", cPageFNC , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageFNC")
+		l = int(cPageFNC) * 4
+		if Cat=="0":
+			link = common.OpenURL("http://netcine.me/page/"+str( l+1 )+"/?filmes").replace('\n','').replace('\r','')
+			l1 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.me/page/"+str( l+2 )+"/?filmes").replace('\n','').replace('\r','')
 			l2 = re.compile("box_movies(.+)").findall(link)
-			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0])
+			link = common.OpenURL("http://netcine.me/page/"+str( l+3 )+"/?filmes").replace('\n','').replace('\r','')
+			l3 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.me/page/"+str( l+4 )+"/?filmes").replace('\n','').replace('\r','')
+			l4 = re.compile("box_movies(.+)").findall(link)
+			#link = common.OpenURL("http://netcine.me/page/"+str( l+5 )+"/?filmes").replace('\n','').replace('\r','')
+			#l5 = re.compile("box_movies(.+)").findall(link)
+			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0])
+		else:
+			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+1 )+"/").replace('\n','').replace('\r','')
+			l1 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+2 )+"/").replace('\n','').replace('\r','')
+			l2 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+3 )+"/").replace('\n','').replace('\r','')
+			l3 = re.compile("box_movies(.+)").findall(link)
+			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+4 )+"/").replace('\n','').replace('\r','')
+			l4 = re.compile("box_movies(.+)").findall(link)
+			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0])
 		if cOrdNCF=="1":
 			lista = sorted(lista, key=lambda lista: lista[1])
 		for img2,name2,url2 in lista:
@@ -290,6 +303,7 @@ def MoviesNC(): #71
 				name2 = name2.replace("&#8211;","-").replace("&#038;","&").replace("&#8217;","\'")
 				img2 = re.sub('-120x170.(jpg|png)', r'.\1', img2 )
 				AddDir(name2 ,url2, 78, img2, img2, isFolder=True)
+		AddDir("[COLOR blue][B]Proxima Pagina >>  ["+ str( int(cPageFNC) + 2 ) +"[/B]][/COLOR]", cPageFNC , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageFNC")
 	except urllib2.URLError, e:
 		AddDir("Server NETCINE offline, tente novamente em alguns minutos" , "", 0, isFolder=False)
 def ListMoviesNC(): #78
@@ -487,7 +501,7 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.se/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
@@ -516,16 +530,16 @@ def PlayMRC2(): #96 Play filmes direto
 			#file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			#player = "https://redecanais.bz//player3/serverf4hlb.php?vid=TGO"
+			#player = "https://redecanais.se//player3/serverf4hlb.php?vid=TGO"
 			#return
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.se/"})
 			#ST(mp4)
 			#exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
 			#player = re.sub('\.php', "hlb.php", player)
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			#return
-			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.bz/"})
+			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.se/"})
 			global background
 			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('\n', '', file[0])
@@ -565,7 +579,7 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.se/"})
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			global background
@@ -717,7 +731,7 @@ def Busca(): #160
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
 		for x in range(0, 5):
-			link = common.OpenURL("https://www.google.com/search?q="+d+"+site:redecanais.bz&hl=pt-BR&&start="+str(l))
+			link = common.OpenURL("https://www.google.com/search?q="+d+"+site:redecanais.se&hl=pt-BR&&start="+str(l))
 			l +=10
 			match = re.compile('href\=\"(https?\:.{0,50}redecanais[^\"]+)\".{50,200}\>([^\<]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
@@ -866,7 +880,7 @@ def TVCB(x): #102
 	#except:
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
-	#link = common.OpenURL("https://redecanais.bz/player3/serverf4-bk.php?vid=JRSCWRLDRNOAMCDO", headers={'referer': "https://homeingles.com/"})
+	#link = common.OpenURL("https://redecanais.se/player3/serverf4-bk.php?vid=JRSCWRLDRNOAMCDO", headers={'referer': "https://homeingles.com/"})
 	#ST(link)
 	#return
 	try:
