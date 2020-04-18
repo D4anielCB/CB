@@ -139,3 +139,4 @@
 20.04.12 - fix chunk
 20.04.13 - fix busca RC
 20.04.14 - fix RC.se paginacao NC filmes
+20.04.17 - fix RC dietafitness.fun
