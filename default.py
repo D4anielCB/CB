@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.17"
+Versao = "20.04.18"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -100,6 +100,7 @@ def Categories(): #70
 	#AddDir("[B]!{0}: {1}[/B] - {2} ".format(getLocaleString(30036), getLocaleString(30037) if makeGroups else getLocaleString(30038) , getLocaleString(30039)), "setting" ,50 ,os.path.join(iconsDir, "setting.png"), isFolder=False)
 	#AddDir("[COLOR white][B][Canais de TV1][/B][/COLOR]" , "", 100, "http://oi68.tinypic.com/116jn69.jpg", "http://oi68.tinypic.com/116jn69.jpg")
 	AddDir("[COLOR white][B][Canais de TV][/B][/COLOR]" , "", 102, "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png", "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png")
+	AddDir("[COLOR white][B][Canais de TV2][/B][/COLOR]" , "", 100, "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png", "http://www.clker.com/cliparts/c/a/c/2/12316861951931359250rg1024_cartoon_tv.svg.hi.png")
 	AddDir("[B][COLOR white][Filmes][/COLOR][/B]", "" , -2,"https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", "https://walter.trakt.tv/images/movies/000/191/797/fanarts/thumb/6049212229.jpg", isFolder=True)
 	AddDir("[COLOR white][B][Séries/Animes/Desenhos][/B][/COLOR]" , "", -3, "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg", "https://walter.trakt.tv/images/shows/000/098/898/fanarts/thumb/bca6f8bc3c.jpg")
 	AddDir("[COLOR gold][B][Filmes Favoritos Cube Play][/B][/COLOR]", "" ,301 , "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png", "http://icons.iconarchive.com/icons/royalflushxx/systematrix/256/Favorites-icon.png")
@@ -857,7 +858,6 @@ def PVR(): #109
 		pass
 def TVCB(x): #102
 	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
-	#AddDir("Test", "", 101, "", "", isFolder=False, IsPlayable=True, info="")
 	AddDir("Configurar PVR Simple Client", "", 109, "", "", isFolder=False, IsPlayable=False, info="")
 	link = common.OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","")
 	if cadulto!="8080":
@@ -917,39 +917,29 @@ def Acento(x):
 	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
 	return x
 def TVRC(): #100
-	c = ["Categoria","Alfabético"]
-	d = xbmcgui.Dialog().select("Qual a ordem dos canais?", c)
-	link = common.OpenURL("http://cubeplay.000webhostapp.com/epg/_rc.php?c="+str(d))
-	#link = common.OpenURL("http://localhost:8080/epg/_rc.php?c="+str(d))
-	match = re.compile('tvg\-logo\=\"([^\"]+).+,(.+)\s(.+)|,(.+)\s(.+)').findall(link)
-	for img2,name2,url2,a,c in match:
-		AddDir(name2, url2, 3, img2, img2, isFolder=False, IsPlayable=True, info="")
+	t = common.OpenURL("https://51.178.220.155/ch.php?usercode=6017538676").replace("\\","//")
+	jq_ = json.loads(t)
+	jq = sorted(jq_, key=lambda jq_: jq_['name'])
+	#ST(jq[0])
+	for jq1 in jq:
+		if jq1['language']== "Brasil":
+			AddDir( "[COLOR green]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
+			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil", '+jq1['name']+ ' (1)')
+			#ST("\n")
+			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101")
+			#ST("\n")
+		elif jq1['language'] == "Brazilian":
+			AddDir( "[COLOR yellow]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
+			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil", '+jq1['name']+ ' (2)')
+			#ST("\n")
+			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101")
+			#ST("\n")
 def PlayTVRC(): #101
-	PlayUrl(name, "https://live.multicanais.com/live/nathd/video.m3u8?md5=p3MW8JKKz4EmQZZ_HJ090Q&expires=1586188772|Referer=https://multicanais.com/player.php?canal=globominas", iconimage, info)
-	return
-	url = common.OpenURL("https://multicanais.com/player.php?canal=cartoonnetworksd")
-	ST(url)
-	try:
-		link = common.OpenURL(url)
-		#player = re.compile('<iframe name=\"Player\".+src=\"([^\"]+)\"').findall(link)
-		player = re.compile('<iframe name=\"Player\".+src=\"[^\"]+\=([^\"]+)').findall(link)
-		#ST(player[0])
-		#link2 = common.OpenURL(player[0])
-		#m2 = re.compile('action="[^\"]+\=([^\"]+)').findall(link2)
-		#m2[0] = re.sub('.\/', 'https://canais.ink/', m2[0])
-		link3 = common.OpenURL("http://cometa.top/player3/canaisvibfree.php?canal="+player[0],headers={'referer': "http://social.olimpicusads.com/"})
-		ST(link3)
-		#ST(link3)
-		#http://cometa.top/player3/canaisvibfree.php?canal=
-		urlp = re.compile('(http[^\"]+m3u[^\"]+)').findall(link3)
-		#ST(urlp[0])
-		if urlp:
-			#ST(urlp[0])
-			PlayUrl(name, urlp[0] + "|Referer=", iconimage, info)
-		else:
-			xbmcgui.Dialog().ok('Cube Play', "Erro, aguarde atualização")
-	except:
-		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+	t = common.OpenURL("https://51.178.220.155/ch.php?usercode=6017538676").replace("\\","//")
+	jq_ = json.loads(t)
+	for jq1 in jq_:
+		if jq1['id'] == url:
+			PlayUrl(jq1['name'], jq1['link'],jq1['logo'],"")
 # ----------------- FIM REDECANAIS TV
 # ----------------- Inicio Filmes Online
 def GenerosFO(): #85
@@ -1832,7 +1822,8 @@ def ST(x):
 	x = str(x)
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 	py = os.path.join( Path, "study.txt")
-	file = open(py, "w")
+	file = open(py, "w+")
+	#file = open(py, "ab+")
 	file.write(x)
 	file.close()
 
