@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.18"
+Versao = "20.04.19"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -917,7 +917,9 @@ def Acento(x):
 	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
 	return x
 def TVRC(): #100
-	t = common.OpenURL("https://51.178.220.155/ch.php?usercode=6017538676").replace("\\","//")
+	import ssl
+	request = urllib2.Request("https://51.178.220.155/ch.php?usercode=6017538676")
+	t = urllib2.urlopen(request, context=ssl._create_unverified_context()).read().replace("\\","//")
 	jq_ = json.loads(t)
 	jq = sorted(jq_, key=lambda jq_: jq_['name'])
 	#ST(jq[0])
@@ -935,7 +937,9 @@ def TVRC(): #100
 			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101")
 			#ST("\n")
 def PlayTVRC(): #101
-	t = common.OpenURL("https://51.178.220.155/ch.php?usercode=6017538676").replace("\\","//")
+	import ssl
+	request = urllib2.Request("https://51.178.220.155/ch.php?usercode=6017538676")
+	t = urllib2.urlopen(request, context=ssl._create_unverified_context()).read().replace("\\","//")
 	jq_ = json.loads(t)
 	for jq1 in jq_:
 		if jq1['id'] == url:
