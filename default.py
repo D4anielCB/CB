@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.19"
+Versao = "20.04.24"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -891,7 +891,7 @@ def PlayTVCB(): #103
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		player = re.sub('^/', "https://canaisgratis.eu/" , player[0] )
 		player = re.sub('.php', "hlb.php", player )
-		if "canal" in url:
+		if "canal=" in url:
 			c = re.compile('canal\=(.+)').findall(url)
 			player = re.sub('canal=bbb', "canal="+c[0], player )
 		#player = re.sub('\.php', "hlb.php", player)
@@ -899,7 +899,7 @@ def PlayTVCB(): #103
 		m = re.compile('http.{10,250}?m3u8[^"|\n|\']{0,100}').findall(m3u)
 		m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
-		PlayUrl(name, m[0] + "|Referer="+player, iconimage, name, "")
+		PlayUrl(name, m[0] + "|Referer=https://dietafitness.fun", iconimage, name, "")
 		link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	except:
 		NF("erro")
