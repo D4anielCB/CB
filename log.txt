@@ -143,3 +143,4 @@
 20.04.18 - Novos canais
 20.04.19 - fix novos canais
 20.04.24 - fix canais
+20.04.30 - fix RC referer
