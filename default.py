@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.04.30"
+Versao = "20.05.04"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -895,7 +895,7 @@ def PlayTVCB(): #103
 			c = re.compile('canal\=(.+)').findall(url)
 			player = re.sub('canal=bbb', "canal="+c[0], player )
 		#player = re.sub('\.php', "hlb.php", player)
-		m3u = common.OpenURL(player,headers={'referer': "https://canaisgratis.eu/"})
+		m3u = common.OpenURL(player,headers={'referer': "https://encripted-encripted-encripted-encripted-encripted-encripted.encripted-encripted-encripted-encripted-encripted-encripted.fun"})
 		m = re.compile('http.{10,250}?m3u8[^"|\n|\']{0,100}').findall(m3u)
 		m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
