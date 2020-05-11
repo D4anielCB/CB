@@ -144,4 +144,5 @@
 20.04.19 - fix novos canais
 20.04.24 - fix canais
 20.04.30 - fix RC referer
-20.05.04 - fix RC canais
+20.05.04 - fix RC canais referer
+20.05.11 - fix RC canais referer
