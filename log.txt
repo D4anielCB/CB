@@ -147,3 +147,4 @@
 20.05.04 - fix RC canais referer
 20.05.11 - fix RC canais referer
 20.05.14 - fix RC referer
+20.05.18 - fix RC referer
