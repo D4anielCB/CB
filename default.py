@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.05.18"
+Versao = "20.05.26"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -546,7 +546,7 @@ def PlayMRC2(): #96 Play filmes direto
 			global background
 			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('\n', '', file[0])
-			file[0] = re.sub('https', 'http', file[0])
+			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|referer="+player, iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
@@ -589,7 +589,7 @@ def PlaySRC(): #133 Play series
 			global background
 			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('\n', '', file[0])
-			file[0] = re.sub('https', 'http', file[0])
+			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl(name, file[0] + "|referer="+player, iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
