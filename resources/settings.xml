@@ -21,6 +21,7 @@
 	<setting id="cPagelan" label="cPagelan" type="text" default="0" visible="false" />
 	<setting id="cPageser" label="cPageser" type="text" default="0" visible="false" />
 	<setting id="cPageani" label="cPageani" type="text" default="0" visible="false" />
+	<setting id="cPagenov" label="cPagenov" type="text" default="0" visible="false" />
 	<setting id="cPagedes" label="cPagedes" type="text" default="0" visible="false" />
 	<setting id="cPagefo1" label="cPagefo1" type="text" default="0" visible="false" />
 	<setting id="cPageMMf" label="cPageMMf" type="text" default="0" visible="false" />
