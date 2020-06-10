@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.05.26"
+Versao = "20.06.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -27,6 +27,7 @@ cPagenac = Addon.getSetting("cPagenac")
 cPagelan = Addon.getSetting("cPagelan")
 cPageser = Addon.getSetting("cPageser")
 cPageani = Addon.getSetting("cPageani")
+cPagenov = Addon.getSetting("cPagenov")
 cPagedes = Addon.getSetting("cPagedes")
 cPagefo1 = Addon.getSetting("cPagefo1")
 cPageMMf = Addon.getSetting("cPageMMf")
@@ -136,6 +137,7 @@ def MSeries(): #-3
 	AddDir("[COLOR blue][B][Séries RedeCanais][/B][/COLOR]" , cPageser, 130, "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", "https://walter.trakt.tv/images/shows/000/001/393/fanarts/thumb/fc68b3b649.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Animes RedeCanais][/B][/COLOR]" , cPageser, 140, "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", "https://walter.trakt.tv/images/shows/000/098/580/fanarts/thumb/d48b65c8a1.jpg", background="cPageser")
 	AddDir("[COLOR blue][B][Desenhos RedeCanais][/B][/COLOR]" , cPageani, 150, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
+	AddDir("[COLOR blue][B][Novelas RedeCanais][/B][/COLOR]" , cPagenov, 230, "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", "https://walter.trakt.tv/images/shows/000/069/829/fanarts/thumb/f0d18d4e1d.jpg", background="cPageser")
 	AddDir("[B][COLOR cyan][Séries MMFilmes.tv][/COLOR][/B]", "config" , 190,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
 	#AddDir("[B][COLOR lightgreen][Séries Superflix.net][/COLOR][/B]", "config" , 401,"https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", "https://walter.trakt.tv/images/shows/000/037/522/fanarts/thumb/6ecdb75c1c.jpg", isFolder=True)
 	setViewM()
@@ -518,7 +520,12 @@ def PlayMRC2(): #96 Play filmes direto
 		link = common.OpenURL(proxy+url2.replace("http\:","https\:"))
 		desc = re.compile('itemprop=\"?description\"?>\s.{0,10}?<p>(.+)<\/p>').findall(link)
 		if desc:
-			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
+			try:
+				desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
+			except:
+				desc = desc[0]
+		else:
+			desc = ""
 		player = re.compile('<iframe.{1,50}src=\"(\/?p[^\"]+)\"').findall(link)
 		if player:
 			#mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
@@ -559,9 +566,6 @@ def PlaySRC(): #133 Play series
 	try:
 		url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
 		link = common.OpenURL(proxy+url2)
-		desc = re.compile('itemprop=\"?description\"?>\s<p>(.+)<\/p>').findall(link)
-		if desc:
-			desc = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), desc[0]).encode('utf-8')
 		player = re.compile('<iframe.{1,50}src=\"(\/?p[^\"]+)\"').findall(link)
 		if player:
 			""" mp4 = re.compile('server(f?\d*).+vid\=(\w+)').findall(player[0])
@@ -659,7 +663,7 @@ def TemporadasRC(x): #135 Episodios
 				AddDir(dubleg + name3 +" "+namem, urlm2, 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			except:
 				pass
-def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
+def SeriesRC(urlrc,pagina2, page1=135): #130 Lista as Series RC
 	try:
 		CategoryOrdem("cOrdRCS")
 		pagina=eval(pagina2)
@@ -676,7 +680,7 @@ def SeriesRC(urlrc,pagina2): #130 Lista as Series RC
 					url2 = re.sub('^\.', "https://"+ RC , url2 )
 					img2 = re.sub('^/', "https://"+RC, img2 )
 					if not "index.html" in url2:
-						AddDir(name2 ,url2, 135, img2, img2, info="")
+						AddDir(name2 ,url2, page1, img2, img2, info="")
 						p += 1
 			else:
 					break
@@ -700,7 +704,6 @@ def AllEpisodiosRC(): #139 Mostrar todos Epi
 					S = S + 1
 			else:
 				name3=name2
-
 			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
 			try:
 				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
@@ -718,6 +721,33 @@ def AllEpisodiosRC(): #139 Mostrar todos Epi
 				AddDir("[COLOR blue][Leg][/COLOR] S"+str(S)+" E"+ name3 +" "+namem ,urlm[1], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 			elif urlm:
 				AddDir("S"+str(S)+" E"+ name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
+def ListaNovRC():
+	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
+	if not "redecanais" in url2:
+		url2 = "https://"+ RC + url2
+	link = common.OpenURL(url2)
+	match = re.compile('<strong>(C.+?)<\/strong>(.+?)(<br|<\/p)').findall(link)
+	S= 0
+	if match:
+		for name2,url2,brp in match:
+			name3 = re.compile('\d+').findall(name2)
+			if name3:
+				name3=name3[0]
+				if int(name3) == 1:
+					S = S + 1
+			else:
+				name3=name2
+			urlm = re.compile('href\=\"(.+?)\"').findall(url2)
+			try:
+				namem = re.sub('&([^;]+);', lambda m: unichr(htmlentitydefs.name2codepoint[m.group(1)]), re.compile('([^\-]+)').findall(url2)[0] ).encode('utf-8')
+			except:
+				namem = re.compile('([^\-]+)').findall(url2)[0]
+			if "<" in namem:
+				namem = ""
+			if urlm:
+				if "http" not in urlm[0]:
+					urlm[0] = "https://"+ RC + urlm[0]
+			AddDir(name3 +" "+namem ,urlm[0], 133, iconimage, iconimage, info="", isFolder=False, IsPlayable=True)
 # ----------------- FIM REDECANAIS SERIES,ANIMES,DESENHOS
 # ----------------- #BUSCA
 def Busca(): #160
@@ -1963,6 +1993,12 @@ elif mode == 120:
 	TogglePrevious(url, background)
 elif mode == 130:
 	SeriesRC("series","cPageser")
+	setViewS()
+elif mode == 230:
+	SeriesRC("novelas","cPagenov", 231)
+	setViewS()
+elif mode == 231:
+	ListaNovRC()
 	setViewS()
 elif mode == 135:
 	TemporadasRC(background)
