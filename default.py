@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.06.10"
+Versao = "20.07.24"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -92,8 +92,8 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.se/"
-RCref="https://player.ec.cx/"
+RC="redecanais.bz/"
+RCref="https://redecanais.bz/player3"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -505,7 +505,7 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.se/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.bz/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
@@ -537,8 +537,8 @@ def PlayMRC2(): #96 Play filmes direto
 			#m = re.compile(reg, re.IGNORECASE).findall(pb)
 			#url2 = m[0]
 			#file = url2 + mp4[0][1]+".mp4"
-			player = re.sub('^/', "https://"+RC, player[0])
-			player = re.sub('\.php', "hlb.php", player)
+			player = re.sub('^/', "https://"+RC, player[0])	
+			#player = re.sub('\.php', "hlb.php", player)
 			#player = re.sub('redecanais\.[^\/]+', "blog.canaisgratis.org", player)
 			#player = "https://redecanais.se//player3/serverf4hlb.php?vid=TGO"
 			#return
@@ -585,7 +585,7 @@ def PlaySRC(): #133 Play series
 			file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
-			player = re.sub('\.php', "hlb.php", player)
+			#player = re.sub('\.php', "hlb.php", player)
 			#player = re.sub('redecanais\.[^\/]+', "blog.canaisgratis.org", player)
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
@@ -957,16 +957,16 @@ def TVRC(): #100
 	for jq1 in jq:
 		if jq1['language']== "Brasil":
 			AddDir( "[COLOR green]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
-			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil", '+jq1['name']+ ' (1)')
-			#ST("\n")
-			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101")
-			#ST("\n")
+			ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
+			ST("\n", "1")
+			ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
+			ST("\n", "1")
 		elif jq1['language'] == "Brazilian":
 			AddDir( "[COLOR yellow]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
-			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil", '+jq1['name']+ ' (2)')
-			#ST("\n")
-			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101")
-			#ST("\n")
+			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (2)", '+jq1['name']+ ' (2)', "1")
+			#ST("\n", "1")
+			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
+			#ST("\n", "1")
 def PlayTVRC(): #101
 	import ssl
 	request = urllib2.Request("https://51.178.220.155/ch.php?usercode=6017538676")
@@ -1853,11 +1853,13 @@ def convert_size(size_bytes):
 def NF(x, t=5000):
 	xbmc.executebuiltin("Notification({0}, {1}, {3}, {2})".format(AddonName, str(x), icon, t))
 
-def ST(x):
+def ST(x, o="w+"):
+	if o == "1":
+		o = "ab+"
 	x = str(x)
 	Path = xbmc.translatePath( xbmcaddon.Addon().getAddonInfo('path') ).decode("utf-8")
 	py = os.path.join( Path, "study.txt")
-	file = open(py, "w+")
+	file = open(py, o)
 	#file = open(py, "ab+")
 	file.write(x)
 	file.close()
