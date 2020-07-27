@@ -151,3 +151,4 @@
 20.05.26 - fix https
 20.06.10 - Add novelas
 20.07.24 - Fix Redecanais depois do down
+20.07.26 - Fix canaisgratis
