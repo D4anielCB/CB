@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.08.04"
+Versao = "20.08.04a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -605,6 +605,7 @@ def TemporadasRC(x): #135 Episodios
 	if not "redecanais" in url2:
 		url2 = "https://"+RC+ url2
 	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("http\:","https\:")
+	link = re.sub('<span style="font-size: x-large;">.{1,100}redecanais.{1,5}\/app', "", link )
 	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
 	i= 0
 	if background=="None":
