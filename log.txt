@@ -153,3 +153,4 @@
 20.07.24 - Fix Redecanais depois do down
 20.07.26 - Fix canaisgratis
 20.08.04 - fix redecanais mudanca de servidor
+20.08.17 - fix redecanais/tvgratis
