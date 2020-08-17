@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.08.04a"
+Versao = "20.08.17"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -93,7 +93,7 @@ proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
 RC="redecanais.ws/"
-RCref="https://redecanais.ws/player3"
+RCref="https://dietafitness.fun"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -538,8 +538,8 @@ def PlayMRC2(): #96 Play filmes direto
 			#url2 = m[0]
 			#file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('^/', "https://"+RC, player[0])	
-			#player = re.sub('\.php', "hlb.php", player)
-			#player = re.sub('redecanais\.[^\/]+', "blog.canaisgratis.org", player)
+			player = re.sub('\.php', "hlb.php", player)
+			#player = re.sub('redecanais\.[^\/]+', "dietafitness.fun", player)
 			#player = "https://redecanais.ws//player3/serverf4hlb.php?vid=TGO"
 			#return
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
@@ -585,9 +585,11 @@ def PlaySRC(): #133 Play series
 			file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
-			#player = re.sub('\.php', "hlb.php", player)
-			#player = re.sub('redecanais\.[^\/]+', "blog.canaisgratis.org", player)
+			player = re.sub('\.php', "hlb.php", player)
+			#player = re.sub('redecanais\.[^\/]+', "dietafitness.fun", player)
+			#player = "https://dietafitness.fun/player3/serverf3hlb.php?vid=ABMNVL&ads=dietafitness.fun"	
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
+			#sys.exit()
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			global background
@@ -922,7 +924,7 @@ def PlayTVCB(): #103
 		#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
 		player = re.sub('^/', "https://redecanaistv.com/" , player[0] )
-		#player = re.sub('.php', "hlb.php", player )
+		player = re.sub('.php', "hlb.php", player )
 		if "canal=" in url:
 			c = re.compile('canal\=(.+)').findall(url)
 			player = re.sub('canal=bbb', "canal="+c[0], "https://redecanaistv.com" )
