@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.08.17"
+Versao = "20.09.10"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -960,10 +960,10 @@ def TVRC(): #100
 	for jq1 in jq:
 		if jq1['language']== "Brasil":
 			AddDir( "[COLOR green]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
-			ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
-			ST("\n", "1")
-			ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
-			ST("\n", "1")
+			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
+			#ST("\n", "1")
+			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
+			#ST("\n", "1")
 		elif jq1['language'] == "Brazilian":
 			AddDir( "[COLOR yellow]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
 			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (2)", '+jq1['name']+ ' (2)', "1")
