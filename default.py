@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.09.15"
+Versao = "20.11.03"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -264,7 +264,7 @@ def PlayS(): #62
 		d = xbmcgui.Dialog().select("Escolha a resolução:", listaf)
 		if d!= -1:
 			listal[d] = re.sub('https', 'http', listal[d])
-			PlayUrl(name, listal[d]+"|http://cdn.netcine.info&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
+			PlayUrl(name, listal[d]+"|Referer=http://cdn.netcine.info&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla%2F5.0+%28compatible%3B+MSIE+10.6%3B+Windows+NT+6.1%3B+Trident%2F6.0%29", iconimage, info)
 	except:
 		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 		sys.exit()
@@ -951,28 +951,31 @@ def Acento(x):
 	x = x.replace("\xe7","ç").replace("\xe0","à").replace("\xe1","á").replace("\xe2","â").replace("\xe3","ã").replace("\xe8","è").replace("\xe9","é").replace("\xea","ê").replace("\xed","í").replace("\xf3","ó").replace("\xf4","ô").replace("\xf5","õ").replace("\xfa","ú")
 	return x
 def TVRC(): #100
+	AddDir("[COLOR maroon]Reload[/COLOR]" , "", 50, isFolder=False)
 	import ssl
-	request = urllib2.Request("https://51.178.220.155/ch.php?usercode=6017538676")
-	t = urllib2.urlopen(request, context=ssl._create_unverified_context()).read().replace("\\","//")
+	#request = urllib2.Request("https://51.178.220.155/ch.php?usercode=6017538676")
+	request = urllib2.Request("http://s1.top2.ws/v21/ch.php?usercode=885457698421&pid=1&mac=48EC30E11015&sn=70313044&customer=google&lang=eng&cs=amlogic&check=3983743268")
+	t = urllib2.urlopen(request, context=ssl._create_unverified_context()).read()
 	jq_ = json.loads(t)
 	jq = sorted(jq_, key=lambda jq_: jq_['name'])
+	#ST(jq)
+	#return
 	#ST(jq[0])
 	for jq1 in jq:
-		if jq1['language']== "Brasil":
-			AddDir( "[COLOR green]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
-			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
-			#ST("\n", "1")
-			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
-			#ST("\n", "1")
-		elif jq1['language'] == "Brazilian":
-			AddDir( "[COLOR yellow]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
-			#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (2)", '+jq1['name']+ ' (2)', "1")
-			#ST("\n", "1")
-			#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
-			#ST("\n", "1")
+		#if not ":" in jq1['name'] and not "xxx" in jq1['name']:
+		if "FILMES" in jq1['category'] or "LEGENDADO EN" in jq1['category'] or "ENTRETENIMENTO" in jq1['category'] or "DOCUMENTARIOS" in jq1['category'] or "NOTICIAS" in jq1['category'] or "TV ABERTA" in jq1['category'] or "INFANTIS" in jq1['category'] or "MUSICA" in jq1['category'] or "PAY PER VIEW" in jq1['category'] :
+			try:
+				AddDir( "[COLOR white]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
+				ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
+				ST("\n", "1")
+				ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
+				ST("\n", "1")
+			except:
+				pass
+
 def PlayTVRC(): #101
 	import ssl
-	request = urllib2.Request("https://51.178.220.155/ch.php?usercode=6017538676")
+	request = urllib2.Request("http://s1.top2.ws/v21/ch.php?usercode=885457698421&pid=1&mac=48EC30E11015&sn=70313044&customer=google&lang=eng&cs=amlogic&check=3983743268")
 	t = urllib2.urlopen(request, context=ssl._create_unverified_context()).read().replace("\\","//")
 	jq_ = json.loads(t)
 	for jq1 in jq_:
