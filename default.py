@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.11.03"
+Versao = "20.11.03a"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -966,10 +966,10 @@ def TVRC(): #100
 		if "FILMES" in jq1['category'] or "LEGENDADO EN" in jq1['category'] or "ENTRETENIMENTO" in jq1['category'] or "DOCUMENTARIOS" in jq1['category'] or "NOTICIAS" in jq1['category'] or "TV ABERTA" in jq1['category'] or "INFANTIS" in jq1['category'] or "MUSICA" in jq1['category'] or "PAY PER VIEW" in jq1['category'] :
 			try:
 				AddDir( "[COLOR white]" + jq1['name'] + "[/COLOR]", jq1['id'] , 101, jq1['logo'], jq1['logo'], isFolder=False, IsPlayable=True, info="")
-				ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
-				ST("\n", "1")
-				ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
-				ST("\n", "1")
+				#ST('#EXTINF:-1 tvg-ID="" tvg-name="" tvg-logo="'+jq1['logo']+'" group-title="Brasil (1)", '+jq1['name']+ ' (1)', "1")
+				#ST("\n", "1")
+				#ST("plugin://plugin.video.CubePlay/?info=&logos=&metah=&cache=0&name="+urllib.quote_plus(jq1['name'])+"&background=None&url="+urllib.quote_plus(jq1['id'])+"&iconimage=&mode=101", "1")
+				#ST("\n", "1")
 			except:
 				pass
 
