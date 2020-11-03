@@ -156,3 +156,4 @@
 20.08.17 - fix redecanais/tvgratis
 20.09.10a - fix tvgratis
 20.09.15 - fix netcine
+20.11.03 - fix canais 2
