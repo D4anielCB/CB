@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.11.03a"
+Versao = "20.11.06"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -552,7 +552,7 @@ def PlayMRC2(): #96 Play filmes direto
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.ws/"})
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('\n', '', file[0])
+			file[0] = re.sub('\n', '', file[1])
 			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|referer="+player, iconimage, desc) #aqui
 		else:
@@ -594,7 +594,7 @@ def PlaySRC(): #133 Play series
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('\n', '', file[0])
+			file[0] = re.sub('\n', '', file[1])
 			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl(name, file[0] + "|referer="+player, iconimage, name)
 		else:
@@ -756,6 +756,7 @@ def ListaNovRC():
 def Busca(): #160
 	AddDir("[COLOR pink][B][Nova Busca][/B][/COLOR]", "" , 50 ,"", isFolder=False)
 	d = xbmcgui.Dialog().input("Busca (poder demorar a carregar os resultados)").replace(" ", "+")
+	#d = "orfa"
 	d = urllib.quote_plus(d)
 	progress = xbmcgui.DialogProgress()
 	progress.create('Buscando...')
@@ -763,7 +764,7 @@ def Busca(): #160
 	if not d:
 		return Categories()
 		sys.exit(int(sys.argv[1]))
-	try:
+	'''try:
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
@@ -778,13 +779,15 @@ def Busca(): #160
 					else:
 						AddDir("[COLOR blue]" +name2+ "[/COLOR]" ,url2, 96, " ", " ", info="", isFolder=False, IsPlayable=True)
 	except:
-		pass
+		pass'''
 	try:
 		p= 1
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
-		for x in range(0, 10):
+		for x in range(0, 20):
 			l +=1
+			progress.update(l*10/2, str(l*10/2)+"%", "Redecanais", "")
+			#AddDir("[COLOR blue]" +str(l)+ "[/COLOR]" ,"", 135, "", "")
 			link = common.OpenURL(proxy+"https://" + RC +"search.php?keywords="+d+"&page="+str(l))
 			match = re.compile('data\-echo\=\"([^\"]+).{10,150}href=\"([^\"]+).{0,10}title=\"([^\"]+)\"').findall(link.replace('\n','').replace('\r',''))
 			if match:
@@ -803,7 +806,7 @@ def Busca(): #160
 				break
 	except:
 		pass
-	progress.update(33, "33%", "Netcine", "")
+	progress.update(100, "100%", "Netcine", "")
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		link2 = common.OpenURL("http://netcine.me/?s="+d).replace('\n','').replace('\r','')
@@ -818,7 +821,7 @@ def Busca(): #160
 					AddDir("[COLOR yellow]" +name2+ "[/COLOR]",url2, 78, img2, img2, isFolder=True)
 	except:
 		pass
-	progress.update(66, "66%", "MMfilmes", "")
+	'''progress.update(66, "66%", "MMfilmes", "")
 	l=0
 	i=0
 	try:
@@ -842,7 +845,7 @@ def Busca(): #160
 					i+=1
 			i=0
 	except:
-		pass
+		pass'''
 	''' progress.update(75, "75%", " SuperFlix", "")
 	AddDir("[COLOR lightgreen][B][Superflix][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 	for x in range(1, 5):
