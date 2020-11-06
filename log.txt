@@ -157,3 +157,4 @@
 20.09.10a - fix tvgratis
 20.09.15 - fix netcine
 20.11.03 - fix canais 2
+20.11.06 - fix busca
