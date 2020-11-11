@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.11.06"
+Versao = "20.11.11"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -552,7 +552,10 @@ def PlayMRC2(): #96 Play filmes direto
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.ws/"})
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('\n', '', file[1])
+			try:
+				file[0] = re.sub('\n', '', file[1])
+			except:
+				file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|referer="+player, iconimage, desc) #aqui
 		else:
@@ -594,7 +597,10 @@ def PlaySRC(): #133 Play series
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('\n', '', file[1])
+			try:
+				file[0] = re.sub('\n', '', file[1])
+			except:
+				file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl(name, file[0] + "|referer="+player, iconimage, name)
 		else:
