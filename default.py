@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.11.11"
+Versao = "20.11.13"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -186,9 +186,9 @@ def CategoryOrdem2(url):
 def Series(): #60
 	try:
 		CategoryOrdem("cOrdNCS")
-		link = common.OpenURL("http://netcine.me/tvshows/page/1/").replace('\n','').replace('\r','')
+		link = common.OpenURL("http://netcine.biz/tvshows/page/1/").replace('\n','').replace('\r','')
 		l2 = re.compile("box_movies(.+)").findall(link)
-		link = common.OpenURL("http://netcine.me/tvshows/page/2/").replace('\n','').replace('\r','')
+		link = common.OpenURL("http://netcine.biz/tvshows/page/2/").replace('\n','').replace('\r','')
 		l3 = re.compile("box_movies(.+)").findall(link)
 		lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l2[0]+l3[0])
 		if cOrdNCS=="1":
@@ -279,25 +279,25 @@ def MoviesNC(): #71
 			AddDir("[COLOR blue][B]Proxima Pagina >>  ["+ str( int(cPageFNC) + 2 ) +"[/B]][/COLOR]", cPageFNC , 110 ,"http://icons.iconarchive.com/icons/iconsmind/outline/256/Previous-icon.png", isFolder=False, background="cPageFNC")
 		l = int(cPageFNC) * 4
 		if Cat=="0":
-			link = common.OpenURL("http://netcine.me/page/"+str( l+1 )+"/?filmes").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/page/"+str( l+1 )+"/?filmes").replace('\n','').replace('\r','')
 			l1 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/"+str( l+2 )+"/?filmes").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/page/"+str( l+2 )+"/?filmes").replace('\n','').replace('\r','')
 			l2 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/"+str( l+3 )+"/?filmes").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/page/"+str( l+3 )+"/?filmes").replace('\n','').replace('\r','')
 			l3 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/page/"+str( l+4 )+"/?filmes").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/page/"+str( l+4 )+"/?filmes").replace('\n','').replace('\r','')
 			l4 = re.compile("box_movies(.+)").findall(link)
-			#link = common.OpenURL("http://netcine.me/page/"+str( l+5 )+"/?filmes").replace('\n','').replace('\r','')
+			#link = common.OpenURL("http://netcine.biz/page/"+str( l+5 )+"/?filmes").replace('\n','').replace('\r','')
 			#l5 = re.compile("box_movies(.+)").findall(link)
 			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0])
 		else:
-			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+1 )+"/").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/category/"+Clista[int(Cat)] + "/page/"+str( l+1 )+"/").replace('\n','').replace('\r','')
 			l1 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+2 )+"/").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/category/"+Clista[int(Cat)] + "/page/"+str( l+2 )+"/").replace('\n','').replace('\r','')
 			l2 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+3 )+"/").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/category/"+Clista[int(Cat)] + "/page/"+str( l+3 )+"/").replace('\n','').replace('\r','')
 			l3 = re.compile("box_movies(.+)").findall(link)
-			link = common.OpenURL("http://netcine.me/category/"+Clista[int(Cat)] + "/page/"+str( l+4 )+"/").replace('\n','').replace('\r','')
+			link = common.OpenURL("http://netcine.biz/category/"+Clista[int(Cat)] + "/page/"+str( l+4 )+"/").replace('\n','').replace('\r','')
 			l4 = re.compile("box_movies(.+)").findall(link)
 			lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(l1[0]+l2[0]+l3[0]+l4[0])
 		if cOrdNCF=="1":
@@ -815,7 +815,7 @@ def Busca(): #160
 	progress.update(100, "100%", "Netcine", "")
 	try:
 		AddDir("[COLOR yellow][B][NetCine.us][/B][/COLOR]", "" , 0 ,"", isFolder=False)
-		link2 = common.OpenURL("http://netcine.me/?s="+d).replace('\n','').replace('\r','')
+		link2 = common.OpenURL("http://netcine.biz/?s="+d).replace('\n','').replace('\r','')
 		lista = re.compile("img src\=\"([^\"]+).+?alt\=\"([^\"]+).+?f\=\"([^\"]+)").findall(link2)
 		for img2,name2,url2 in lista:
 			if name2!="Close" and name2!="NetCine":
@@ -900,6 +900,8 @@ def PVR(): #109
 		NF("Instale o addon PVR Simple Client")
 		pass
 def TVCB(x): #102
+	if "imdb" in cadulto:
+		AddDir("Drive Test", "plugin://plugin.video.gdrive?mode=streamURL&amp;url=https://drive.google.com/file/d/1YBJyp-jOhH9jD3MPikSjyb1-ZigN8vq2/view?usp=sharing", 3, "", "", isFolder=False, IsPlayable=True, info="")
 	#AddDir("reload", "", 50, "", "", isFolder=False, IsPlayable=False, info="")
 	AddDir("Configurar PVR Simple Client", "", 109, "", "", isFolder=False, IsPlayable=False, info="")
 	link = common.OpenURL("https://pastebin.com/raw/a5aLGgim").replace("\n","")
