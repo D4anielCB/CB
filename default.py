@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.11.13"
+Versao = "20.11.18"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -92,7 +92,7 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.ws/"
+RC="redecanais.cloud/"
 RCref="https://dietafitness.fun"
 	
 def getLocaleString(id):
@@ -505,7 +505,7 @@ def PlayMRC(): #95 Play filmes
 		if player:
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.ws/"})
+			mp4 = common.OpenURL(player ,headers={'referer': "https://redecanais.cloud/"})
 			file=re.compile('[^"|\']+\.mp4').findall(mp4)
 			AddDir("[B][COLOR yellow]"+ name +" [/COLOR][/B]"  , file[0] + "?attachment=true|referer=https://lll.llllllllllllllllllllllllllllllllllllllll.fun/", 3, iconimage, iconimage, index=0, isFolder=False, IsPlayable=True, info=desc, background=url+";;;"+name+";;;RC")
 		else:
@@ -540,7 +540,7 @@ def PlayMRC2(): #96 Play filmes direto
 			player = re.sub('^/', "https://"+RC, player[0])	
 			player = re.sub('\.php', "hlb.php", player)
 			#player = re.sub('redecanais\.[^\/]+', "dietafitness.fun", player)
-			#player = "https://redecanais.ws//player3/serverf4hlb.php?vid=TGO"
+			#player = "https://redecanais.cloud//player3/serverf4hlb.php?vid=TGO"
 			#return
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
 			#ST(mp4)
@@ -549,7 +549,7 @@ def PlayMRC2(): #96 Play filmes direto
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
 			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
 			#return
-			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.ws/"})
+			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.cloud/"})
 			global background
 			background=url+";;;"+name+";;;RC"
 			try:
@@ -606,7 +606,7 @@ def PlaySRC(): #133 Play series
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
-		xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
+		xbmcgui.Dialog().ok('Cube Play', 'Erro 2, tente novamente em alguns minutos')
 		sys.exit()
 def TemporadasRC(x): #135 Episodios
 	url2 = re.sub('redecanais\.[^\/]+', RC, url.replace("http\:","https\:") )
@@ -775,7 +775,7 @@ def Busca(): #160
 		AddDir("[COLOR blue][B][RedeCanais][/B][/COLOR]", "" , 0 ,"", isFolder=False)
 		l= 0
 		for x in range(0, 5):
-			link = common.OpenURL("https://www.google.com/search?q="+d+"+site:redecanais.ws&hl=pt-BR&&start="+str(l))
+			link = common.OpenURL("https://www.google.com/search?q="+d+"+site:redecanais.cloud&hl=pt-BR&&start="+str(l))
 			l +=10
 			match = re.compile('href\=\"(https?\:.{0,50}redecanais[^\"]+)\".{50,200}\>([^\<]+)').findall(link.replace('\n','').replace('\r',''))
 			if match:
@@ -927,7 +927,7 @@ def TVCB(x): #102
 	#except:
 	#	AddDir("Servidor offline, tente novamente em alguns minutos" , "", 0, "", "", 0)
 def PlayTVCB(): #103
-	#link = common.OpenURL("https://redecanais.ws/player3/serverf4-bk.php?vid=JRSCWRLDRNOAMCDO", headers={'referer': "https://homeingles.com/"})
+	#link = common.OpenURL("https://redecanais.cloud/player3/serverf4-bk.php?vid=JRSCWRLDRNOAMCDO", headers={'referer': "https://homeingles.com/"})
 	#ST(link)
 	#return
 	try:
