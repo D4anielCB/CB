@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.11.18"
+Versao = "20.12.12"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -934,18 +934,18 @@ def PlayTVCB(): #103
 		link = common.OpenURL("https://redecanaistv.com/"+url)
 		#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
-		player = re.sub('^/', "https://gamesgo.fun/" , player[0] )
+		player = re.sub('^/', "https://topauto.fun/" , player[0] )
 		player = re.sub('.php', "hlb.php", player )
 		if "canal=" in url:
 			c = re.compile('canal\=(.+)').findall(url)
 			player = re.sub('canal=bbb', "canal="+c[0], "https://redecanaistv.com" )
 		#player = re.sub('\.php', "hlb.php", player)
-		m3u = common.OpenURL(player,headers={'referer': "https://gamesgo.fun/"})
+		m3u = common.OpenURL(player,headers={'referer': "https://topauto.fun/"})
 		m = re.compile('http.{10,250}?m3u8[^"|\n|\']{0,100}').findall(m3u)
-		m[0] = re.sub('https', 'http', m[0] )
+		#m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
-		PlayUrl(name, m[0] + "|Referer=https://dietafitness.fun", iconimage, name, "")
-		link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
+		PlayUrl(name, m[0] + "|Referer=https://topauto.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
+		#link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	except:
 		NF("erro")
 	#ST(m[0])
