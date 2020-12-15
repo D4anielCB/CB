@@ -162,3 +162,4 @@
 20.11.13 - new host NC
 20.11.18 - fix host RC .cloud
 20.12.12 - fix TV RC UA
+20.12.15 - redecanais.app
