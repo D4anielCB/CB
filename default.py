@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.12.12"
+Versao = "20.12.15"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -92,8 +92,8 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.cloud/"
-RCref="https://dietafitness.fun"
+RC="redecanais.app/"
+RCref="https://topauto.fun/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
