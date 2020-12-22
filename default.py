@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.12.15"
+Versao = "20.12.22"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -92,7 +92,7 @@ URLFO=URLP+"fo/"
 proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
-RC="redecanais.app/"
+RC="redecanais.cloud/"
 RCref="https://topauto.fun/"
 	
 def getLocaleString(id):
@@ -539,7 +539,8 @@ def PlayMRC2(): #96 Play filmes direto
 			#file = url2 + mp4[0][1]+".mp4"
 			player = re.sub('^/', "https://"+RC, player[0])	
 			player = re.sub('\.php', "hlb.php", player)
-			#player = re.sub('redecanais\.[^\/]+', "dietafitness.fun", player)
+			player = re.sub('redecanais\.[^\/]+', "topauto.fun", player)
+			#ST(player)
 			#player = "https://redecanais.cloud//player3/serverf4hlb.php?vid=TGO"
 			#return
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
@@ -553,11 +554,11 @@ def PlayMRC2(): #96 Play filmes direto
 			global background
 			background=url+";;;"+name+";;;RC"
 			try:
-				file[0] = re.sub('\n', '', file[1])
+				file[0] = re.sub('\n', '', file[0])
 			except:
 				file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|referer="+player, iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|Referer=https://topauto.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -589,7 +590,7 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			#player = re.sub('redecanais\.[^\/]+', "dietafitness.fun", player)
+			player = re.sub('redecanais\.[^\/]+', "topauto.fun", player)
 			#player = "https://dietafitness.fun/player3/serverf3hlb.php?vid=ABMNVL&ads=dietafitness.fun"	
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
 			#sys.exit()
@@ -598,7 +599,7 @@ def PlaySRC(): #133 Play series
 			global background
 			background=url+";;;"+name+";;;RC"
 			try:
-				file[0] = re.sub('\n', '', file[1])
+				file[0] = re.sub('\n', '', file[0])
 			except:
 				file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
@@ -613,7 +614,7 @@ def TemporadasRC(x): #135 Episodios
 	if not "redecanais" in url2:
 		url2 = "https://"+RC+ url2
 	link = common.OpenURL(proxy+url2).replace('\n','').replace('\r','').replace('</html>','<span style="font').replace("http\:","https\:")
-	link = re.sub('<span style="font-size: x-large;">.{1,100}redecanais.{1,5}\/app', "", link )
+	link = re.sub('<span style="font-size: x-large;">+.+?windows', "", link )
 	temps = re.compile('(<span style="font-size: x-large;">(.+?)<\/span>)').findall(link)
 	i= 0
 	if background=="None":
