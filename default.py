@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.12.22"
+Versao = "20.12.28"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -548,7 +548,7 @@ def PlayMRC2(): #96 Play filmes direto
 			#exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
 			#player = re.sub('\.php', "hlb.php", player)
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
+			file=re.compile('[^"|\']+\.mp4[^"|\']*').findall(mp4)
 			#return
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.cloud/"})
 			global background
@@ -590,12 +590,12 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			player = re.sub('redecanais\.[^\/]+', "topauto.fun", player)
+			#player = re.sub('redecanais\.[^\/]+', "topauto.fun", player)
 			#player = "https://dietafitness.fun/player3/serverf3hlb.php?vid=ABMNVL&ads=dietafitness.fun"	
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
 			#sys.exit()
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4[^"|\']+').findall(mp4)
+			file=re.compile('[^"|\']+\.mp4[^"|\']*').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
 			try:
@@ -942,7 +942,7 @@ def PlayTVCB(): #103
 			player = re.sub('canal=bbb', "canal="+c[0], "https://redecanaistv.com" )
 		#player = re.sub('\.php', "hlb.php", player)
 		m3u = common.OpenURL(player,headers={'referer': "https://topauto.fun/"})
-		m = re.compile('http.{10,250}?m3u8[^"|\n|\']{0,100}').findall(m3u)
+		m = re.compile('[^"|\']+m3u8[^"|\']*').findall(m3u)
 		#m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
 		PlayUrl(name, m[0] + "|Referer=https://topauto.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
