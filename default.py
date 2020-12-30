@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.12.28"
+Versao = "20.12.30"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -590,10 +590,9 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			#player = re.sub('redecanais\.[^\/]+', "topauto.fun", player)
+			player = re.sub('redecanais\.[^\/]+', "topauto.fun", player)
 			#player = "https://dietafitness.fun/player3/serverf3hlb.php?vid=ABMNVL&ads=dietafitness.fun"	
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
-			#sys.exit()
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
 			file=re.compile('[^"|\']+\.mp4[^"|\']*').findall(mp4)
 			global background
@@ -601,9 +600,9 @@ def PlaySRC(): #133 Play series
 			try:
 				file[0] = re.sub('\n', '', file[0])
 			except:
-				file[0] = re.sub('\n', '', file[0])
+				file[0] = re.sub('\n', '', file[1])
 			#file[0] = re.sub('https', 'http', file[0])
-			PlayUrl(name, file[0] + "|referer="+player, iconimage, name)
+			PlayUrl(name, file[0] + "|Referer=https://topauto.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
