@@ -165,3 +165,4 @@
 20.12.15 - redecanais.app
 20.12.22 - fix redecanais series and play
 20.12.28 - fix RC
+21.01.04 - fix RC void
