@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "20.12.30"
+Versao = "21.01.04"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -548,14 +548,16 @@ def PlayMRC2(): #96 Play filmes direto
 			#exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
 			#player = re.sub('\.php', "hlb.php", player)
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4[^"|\']*').findall(mp4)
+			file=re.compile('src..([^"|\']+\.mp4[^"|\'|\n]*)').findall(mp4)
 			#return
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.cloud/"})
 			global background
 			background=url+";;;"+name+";;;RC"
 			try:
 				file[0] = re.sub('\n', '', file[0])
+				file[0] = re.sub('https', 'http', file[0])
 			except:
+				file=re.compile('baixar..([^"|\']+\.mp4[^"|\'|\n]*)').findall(mp4)
 				file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|Referer=https://topauto.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, desc) #aqui
@@ -594,13 +596,15 @@ def PlaySRC(): #133 Play series
 			#player = "https://dietafitness.fun/player3/serverf3hlb.php?vid=ABMNVL&ads=dietafitness.fun"	
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4[^"|\']*').findall(mp4)
+			file=re.compile('src..([^"|\']+\.mp4[^"|\'|\n]*)').findall(mp4)
 			global background
 			background=url+";;;"+name+";;;RC"
 			try:
 				file[0] = re.sub('\n', '', file[0])
+				file[0] = re.sub('https', 'http', file[0])
 			except:
-				file[0] = re.sub('\n', '', file[1])
+				file=re.compile('baixar..([^"|\']+\.mp4[^"|\'|\n]*)').findall(mp4)
+				file[0] = re.sub('\n', '', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
 			PlayUrl(name, file[0] + "|Referer=https://topauto.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name)
 		else:
