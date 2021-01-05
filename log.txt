@@ -166,3 +166,4 @@
 20.12.22 - fix redecanais series and play
 20.12.28 - fix RC
 21.01.04 - fix RC void
+21.01.04a - improved play RC
