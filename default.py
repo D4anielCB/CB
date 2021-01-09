@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "21.01.05"
+Versao = "21.01.09"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -93,7 +93,7 @@ proxy = "http://cubeplay.000webhostapp.com/nc/nc.php?u="
 proxy = ""
 
 RC="redecanais.cloud/"
-RCref="https://bemestarglobal.fun/"
+RCref="https://gamesgo.fun/"
 	
 def getLocaleString(id):
 	return Addon.getLocalizedString(id).encode('utf-8')
@@ -537,29 +537,37 @@ def PlayMRC2(): #96 Play filmes direto
 			#m = re.compile(reg, re.IGNORECASE).findall(pb)
 			#url2 = m[0]
 			#file = url2 + mp4[0][1]+".mp4"
-			player = re.sub('^/', "https://"+RC, player[0])	
-			player = re.sub('\.php', "hlb.php", player)
-			player = re.sub('redecanais\.[^\/]+', "bemestarglobal.fun", player)
 			#ST(player)
 			#player = "https://redecanais.cloud//player3/serverf4hlb.php?vid=TGO"
 			#return
+			player = re.sub('^/', "https://"+RC, player[0])
+			player = re.sub('\.php', "hlb.php", player)
+			player = re.sub('redecanais\.[^\/]+', "gamesgo.fun", player)
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
-			player = re.compile('href.{1,5}(mega[^"|\']*)').findall(mp4)
-			mp4 = common.OpenURL("https://bemestarglobal.fun/player3/"+player[0] ,headers={'referer': RCref})
-			#ST(mp4)
+			try:
+				player = re.compile('href.{1,5}(mega[^"|\']*)').findall(mp4)
+				mp42 = common.OpenURL("https://gamesgo.fun/player3/"+player[0] ,headers={'referer': RCref})
+				source = re.compile('source.+').findall(mp42)
+				file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
+				tf = testfile(file[0])
+				if tf == True:
+					NF(2)
+				else:
+					NF(1)
+					file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
+			except:
+				NF(1)
+				file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
 			#exp = re.compile('expires\=([^\'|\"]+)').findall(auth)
 			#player = re.sub('\.php', "hlb.php", player)
 			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			source = re.compile('source.+').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
 			#return
 			#mp4 = common.OpenURL(player + "&expires=" + exp[0] ,headers={'referer': "https://redecanais.cloud/"})
 			global background
 			background=url+";;;"+name+";;;RC"
 			file[0] = re.sub('\n', '', file[0])
-			file[0] = re.sub('https', 'http', file[0])
 			#file[0] = re.sub('https', 'http', file[0])
-			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|Referer=https://bemestarglobal.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, desc) #aqui
+			PlayUrl("[B][COLOR white]"+ name +" [/COLOR][/B]", file[0] +"|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, desc) #aqui
 		else:
 			AddDir("[B]Ocorreu um erro[/B]"  , "", 0, iconimage, iconimage, index=0, isFolder=False, IsPlayable=False, info="Erro")
 	except:
@@ -591,20 +599,24 @@ def PlaySRC(): #133 Play series
 			player = re.sub('.php', "playerfree.php", player[0] ) """
 			player = re.sub('^/', "https://"+RC, player[0])
 			player = re.sub('\.php', "hlb.php", player)
-			player = re.sub('redecanais\.[^\/]+', "bemestarglobal.fun", player)
-			#player = "https://bemestarglobal.fun/player3/mega3.php?vid=https://vod.encripted-encripted-encripted-encripted-encripted-encripted.fun/RCServer02/ondemand/OSJTSNST01EP01.mp4?mu3zAQc9HC3GbwJq=fSYZk3fJh9DKy9buIaz6_g&3U1G7qaTxrPbalZnEx=1609835519"	
+			player = re.sub('redecanais\.[^\/]+', "gamesgo.fun", player)
 			mp4 = common.OpenURL(player ,headers={'referer': RCref})
-			player = re.compile('href.{1,5}(mega[^"|\']*)').findall(mp4)
-			mp4 = common.OpenURL("https://bemestarglobal.fun/player3/"+player[0] ,headers={'referer': RCref})
-			#file=re.compile('[^"|\']+\.mp4.{1,15}.m3u8').findall(mp4)
-			source = re.compile('source.+').findall(mp4)
-			file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
-			global background
-			background=url+";;;"+name+";;;RC"
-			file[0] = re.sub('\n', '', file[0])
-			file[0] = re.sub('https', 'http', file[0])
-			#file[0] = re.sub('https', 'http', file[0])
-			PlayUrl(name, file[0] + "|Referer=https://bemestarglobal.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name)
+			try:
+				player = re.compile('href.{1,5}(mega[^"|\']*)').findall(mp4)
+				mp42 = common.OpenURL("https://gamesgo.fun/player3/"+player[0] ,headers={'referer': RCref})
+				source = re.compile('source.+').findall(mp42)
+				file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
+				tf = testfile(file[0])
+				if tf == True:
+					NF(2)
+				else:
+					NF(1)
+					file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
+			except:
+				NF(1)
+				file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
+			file[0] = re.sub('\n', '', file[0])	
+			PlayUrl(name, file[0] + "|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name)
 		else:
 			xbmcgui.Dialog().ok('Cube Play', 'Erro, tente novamente em alguns minutos')
 	except:
@@ -936,17 +948,17 @@ def PlayTVCB(): #103
 		link = common.OpenURL("https://redecanaistv.com/"+url)
 		#link = common.OpenURL("https://canaisgratis.top/assistir-max-prime-online-24-horas-ao-vivo_8586fbbe2.html")
 		player = re.compile('<iframe.{1,50}src=\"([^\"]+)\"').findall(link)
-		player = re.sub('^/', "https://bemestarglobal.fun/" , player[0] )
+		player = re.sub('^/', "https://gamesgo.fun/" , player[0] )
 		player = re.sub('.php', "hlb.php", player )
 		if "canal=" in url:
 			c = re.compile('canal\=(.+)').findall(url)
 			player = re.sub('canal=bbb', "canal="+c[0], "https://redecanaistv.com" )
 		#player = re.sub('\.php', "hlb.php", player)
-		m3u = common.OpenURL(player,headers={'referer': "https://bemestarglobal.fun/"})
+		m3u = common.OpenURL(player,headers={'referer': "https://gamesgo.fun/"})
 		m = re.compile('[^"|\']+m3u8[^"|\']*').findall(m3u)
 		#m[0] = re.sub('https', 'http', m[0] )
 		m[0] = re.sub( '\'|"', '', m[0] )
-		PlayUrl(name, m[0] + "|Referer=https://bemestarglobal.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
+		PlayUrl(name, m[0] + "|Referer=https://gamesgo.fun&Connection=Keep-Alive&Accept-Language=en&User-Agent=Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0", iconimage, name, "")
 		#link3 = common.OpenURL("http://cbplay.000webhostapp.com/rc/_grc.php?u="+m[0])
 	except:
 		NF("erro")
@@ -1501,6 +1513,15 @@ def baixarsf(link=""):
 	progress.close()
 	return py
 # ----------------- Fim Superflix
+def testfile(url):
+	try:
+		headers = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; rv:11.0) Gecko/20100110 Firefox/11.0' }
+		req = urllib2.Request(url, None, headers)
+		req.headers['Range'] = 'bytes=%s-%s' % (100, 350)
+		f = urllib2.urlopen(req).read()
+		return True
+	except:
+		return False
 def GetChoice(choiceTitle, fileTitle, urlTitle, choiceFile, choiceUrl, choiceNone=None, fileType=1, fileMask=None, defaultText=""):
 	choice = ''
 	choiceList = [getLocaleString(choiceFile), getLocaleString(choiceUrl)]
