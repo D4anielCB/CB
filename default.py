@@ -1,7 +1,7 @@
 ﻿# -*- coding: utf-8 -*-
 import urllib, urlparse, sys, xbmcplugin ,xbmcgui, xbmcaddon, xbmc, os, json, hashlib, re, urllib2, htmlentitydefs, math
 
-Versao = "21.01.09"
+Versao = "21.01.12"
 
 AddonID = 'plugin.video.CubePlay'
 Addon = xbmcaddon.Addon(AddonID)
@@ -549,12 +549,12 @@ def PlayMRC2(): #96 Play filmes direto
 				mp42 = common.OpenURL("https://gamesgo.fun/player3/"+player[0] ,headers={'referer': RCref})
 				source = re.compile('source.+').findall(mp42)
 				file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
+				file[0] = re.sub('https', 'http', file[0])
 				tf = testfile(file[0])
 				if tf == True:
 					NF(2)
 				else:
-					NF(1)
-					file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
+					f="1"+1
 			except:
 				NF(1)
 				file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
@@ -606,12 +606,12 @@ def PlaySRC(): #133 Play series
 				mp42 = common.OpenURL("https://gamesgo.fun/player3/"+player[0] ,headers={'referer': RCref})
 				source = re.compile('source.+').findall(mp42)
 				file=re.compile('[^"|\']+\.mp4[^"|\'|\n]*').findall(source[0])
+				file[0] = re.sub('https', 'http', file[0])
 				tf = testfile(file[0])
 				if tf == True:
 					NF(2)
 				else:
-					NF(1)
-					file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
+					f="1"+1
 			except:
 				NF(1)
 				file=re.compile('src..(http.{1,200}\.mp4[^"|\']*)').findall(mp4)
@@ -1763,10 +1763,11 @@ def ListHistoric(file, info):
 	file = os.path.join(addon_data_dir, file)
 	chList = common.ReadList(file)
 	for channel in reversed(chList):
+		channel["image"] = re.sub('redecanais.{1,5}\/', 'redecanais.cloud/', channel["image"] )
 		if cPlayD == "true" and channel["mode"]=="95":
-			AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), "96", channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=False, IsPlayable=True, info=info)
+			AddDir(channel["name"].encode("utf-8"), channel["url"], "96", channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=False, IsPlayable=True, info="")
 		else:
-			AddDir(channel["name"].encode("utf-8"), channel["url"].encode("utf-8"), channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info=info)
+			AddDir(channel["name"].encode("utf-8"), channel["url"], channel["mode"], channel["image"].encode("utf-8"), channel["image"].encode("utf-8"), isFolder=True, IsPlayable=False, info="")
 		
 def RemoveFromLists(index, listFile):
 	chList = common.ReadList(listFile) 
